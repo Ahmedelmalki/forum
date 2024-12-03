@@ -54,12 +54,6 @@ CREATE TABLE likes (
     FOREIGN KEY (comment_id) REFERENCES comments (id)
 );
 
--- Insert Sample Data
--- Users
-INSERT INTO users (username, email, password) VALUES 
-('john_doe', 'john@example.com', 'password123'),
-('jane_doe', 'jane@example.com', 'password456');
-
 -- Categories
 INSERT INTO categories (name) VALUES 
 ('General'),

@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
-	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -18,67 +17,91 @@ func main() {
 	}
 	defer db.Close()
 
-	// Register the /login route and attach the login handler
-	http.HandleFunc("/login", loginHandler(db))
-
-	// Other routes
+	// Route to serve the home page
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to the Forum!"))
+		http.ServeFile(w, r, "static/home.html")
 	})
+
+	// Route to serve the registration page
+	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "static/register.html")
+	})
+
+	// Route to handle registration form submission
+	http.HandleFunc("/register/submit", registerHandler(db))
+
+	// Handlers
+	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./static/login.html")
+	})
+	http.HandleFunc("/login/submit", loginHandler(db))
+	http.HandleFunc("/posts", postsHandler)
 
 	// Start server
 	fmt.Println("Server is running on http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-
-func loginHandler(db *sql.DB) http.HandlerFunc {
+// Handler to process registration form submission
+func registerHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet {
-			// Serve the login form (HTML)
-			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprintln(w, `
-				<form action="/login" method="POST">
-					<input type="email" name="email" placeholder="Email" required />
-					<input type="password" name="password" placeholder="Password" required />
-					<button type="submit">Login</button>
-				</form>
-			`)
+		if r.Method != http.MethodPost {
+			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 			return
 		}
 
-		if r.Method == http.MethodPost {
-			// Fetch login details from the form
-			email := r.FormValue("email")
-			password := r.FormValue("password")
+		username := r.FormValue("username")
+		email := r.FormValue("email")
+		password := r.FormValue("password") // No encryption here
 
-			// Fetch the user from the database
-			var hashedPassword string
-			err := db.QueryRow("SELECT password FROM users WHERE email = ?", email).Scan(&hashedPassword)
-			if err != nil {
-				if err == sql.ErrNoRows {
-					http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-				} else {
-					log.Printf("Error querying user: %v\n", err)
-					http.Error(w, "Internal server error", http.StatusInternalServerError)
-				}
-				return
-			}
-
-			// Compare the provided password with the hashed password
-			err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-			if err != nil {
-				http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-				return
-			}
-
-			// Successful login
-			http.SetCookie(w, &http.Cookie{
-				Name:  "session_token",
-				Value: "some-unique-token", // Ideally, generate a secure session token
-				Path:  "/",
-			})
-			fmt.Fprintln(w, "Login successful!")
+		if username == "" || email == "" || password == "" {
+			http.Error(w, "All fields are required", http.StatusBadRequest)
+			return
 		}
+
+		_, err := db.Exec("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, password)
+		if err != nil {
+			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Fprintln(w, "User registered successfully!")
 	}
+}
+
+func loginHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			return
+		}
+
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+
+		// Check if the user exists in the database
+		var storedPassword string
+		err := db.QueryRow("SELECT password FROM users WHERE email = ?", email).Scan(&storedPassword)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				http.Error(w, "User not found", http.StatusUnauthorized)
+			} else {
+				http.Error(w, "Database error", http.StatusInternalServerError)
+			}
+			return
+		}
+
+		// For simplicity, we're not hashing passwords here
+		if storedPassword != password {
+			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			return
+		}
+
+		// Redirect to the posts page
+		http.Redirect(w, r, "/posts", http.StatusSeeOther)
+	}
+}
+
+func postsHandler(w http.ResponseWriter, r *http.Request) {
+	 http.ServeFile(w, r, "static/posts.html")
 }
