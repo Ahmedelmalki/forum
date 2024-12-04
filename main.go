@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	forum "forum/app"
 	"log"
 	"net/http"
 
@@ -28,80 +29,16 @@ func main() {
 	})
 
 	// Route to handle registration form submission
-	http.HandleFunc("/register/submit", registerHandler(db))
+	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
 	// Handlers
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./static/login.html")
 	})
-	http.HandleFunc("/login/submit", loginHandler(db))
-	http.HandleFunc("/posts", postsHandler)
+	http.HandleFunc("/login/submit", forum.LoginHandler(db))
+	http.HandleFunc("/posts", forum.LostsHandler)
 
 	// Start server
 	fmt.Println("Server is running on http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-
-// Handler to process registration form submission
-func registerHandler(db *sql.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			return
-		}
-
-		username := r.FormValue("username")
-		email := r.FormValue("email")
-		password := r.FormValue("password") // No encryption here
-
-		if username == "" || email == "" || password == "" {
-			http.Error(w, "All fields are required", http.StatusBadRequest)
-			return
-		}
-
-		_, err := db.Exec("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, password)
-		if err != nil {
-			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
-			return
-		}
-
-		fmt.Fprintln(w, "User registered successfully!")
-	}
-}
-
-func loginHandler(db *sql.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			return
-		}
-
-		email := r.FormValue("email")
-		password := r.FormValue("password")
-
-		// Check if the user exists in the database
-		var storedPassword string
-		err := db.QueryRow("SELECT password FROM users WHERE email = ?", email).Scan(&storedPassword)
-		if err != nil {
-			if err == sql.ErrNoRows {
-				http.Error(w, "User not found", http.StatusUnauthorized)
-			} else {
-				http.Error(w, "Database error", http.StatusInternalServerError)
-			}
-			return
-		}
-
-		// For simplicity, we're not hashing passwords here
-		if storedPassword != password {
-			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-			return
-		}
-
-		// Redirect to the posts page
-		http.Redirect(w, r, "/posts", http.StatusSeeOther)
-	}
-}
-
-func postsHandler(w http.ResponseWriter, r *http.Request) {
-	 http.ServeFile(w, r, "static/posts.html")
 }
