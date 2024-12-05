@@ -18,6 +18,10 @@ func main() {
 	}
 	defer db.Close()
 
+	if err := db.Ping(); err != nil {
+    log.Fatalf("Database connection error: %v", err)
+	}
+
 	// Route to serve the home page
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/home.html")
@@ -36,7 +40,10 @@ func main() {
 		http.ServeFile(w, r, "./static/login.html")
 	})
 	http.HandleFunc("/login/submit", forum.LoginHandler(db))
-	http.HandleFunc("/posts", forum.LostsHandler)
+
+	http.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
+    http.ServeFile(w, r, "./static/posts.html")
+})
 
 	// Start server
 	fmt.Println("Server is running on http://localhost:8080")

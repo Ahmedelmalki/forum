@@ -11,6 +11,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			fmt.Println("error 1")
 			return
 		}
 
@@ -22,14 +23,16 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "All fields are required", http.StatusBadRequest)
 			return
 		}
-
-		_, err := db.Exec("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", username, email, password)
+		query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+		_, err := db.Exec(query, username, email, password)
 		if err != nil {
 			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
+			fmt.Println("error 2")
 			return
 		}
 
-		fmt.Fprintln(w, "User registered successfully!")
+		fmt.Println("User registered successfully!")
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 
@@ -45,10 +48,12 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 		// Check if the user exists in the database
 		var storedPassword string
-		err := db.QueryRow("SELECT password FROM users WHERE email = ?", email).Scan(&storedPassword)
+		query := "SELECT password FROM users WHERE email = ?"
+		err := db.QueryRow(query, email).Scan(&storedPassword)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "User not found", http.StatusUnauthorized)
+				fmt.Println("here")
 			} else {
 				http.Error(w, "Database error", http.StatusInternalServerError)
 			}
@@ -60,9 +65,11 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
+		fmt.Printf("%s logged in successfully!\n", email)
+		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
 
-func LostsHandler(w http.ResponseWriter, r *http.Request) {
-	 http.ServeFile(w, r, "static/posts.html")
-}
+// func PostsHandler(w http.ResponseWriter, r *http.Request) {
+// 	 http.ServeFile(w, r, "static/posts.html")
+// }

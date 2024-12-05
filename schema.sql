@@ -1,3 +1,9 @@
+-- Drop Users Table if it exists
+DROP TABLE IF EXISTS users;
+
+-- Drop Posts Table if it exists
+DROP TABLE IF EXISTS posts;
+
 -- Create Users Table
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,4 +21,3 @@ CREATE TABLE posts (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
-
