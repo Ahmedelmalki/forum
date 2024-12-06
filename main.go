@@ -46,6 +46,6 @@ func main() {
 })
 
 	// Start server
-	fmt.Println("Server is running on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Println("Server is running on http://localhost:8090")
+	log.Fatal(http.ListenAndServe(":8090", nil))
 }

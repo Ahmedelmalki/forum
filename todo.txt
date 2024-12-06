@@ -1,0 +1,11 @@
+- fix the goddumn dockerfile
+- fix the database schema
+    You must use at least one SELECT, one CREATE and one INSERT queries.
+- encrypet the fkn passwords
+    Must ask for email
+    When the email is already taken return an error response.
+    Must ask for username
+    Must ask for password
+    The password must be encrypted when stored (this is a Bonus task)
+
+what the fuck is CGO_ENABLED=0
