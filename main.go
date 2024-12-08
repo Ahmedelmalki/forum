@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	forum "forum/app"
+	"io"
 	"log"
 	"net/http"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3" // SQLite driver
 )
@@ -21,6 +23,23 @@ func main() {
 	if err := db.Ping(); err != nil {
     log.Fatalf("Database connection error: %v", err)
 	}
+
+	scriptFile, err := os.Open("schema.sql")
+if err != nil {
+	log.Fatalf("Failed to open SQL script file: %v", err)
+}
+defer scriptFile.Close()
+
+scriptContent, err := io.ReadAll(scriptFile) // Read the entire file content
+if err != nil {
+	log.Fatalf("Failed to read SQL script file: %v", err)
+}
+
+_, err = db.Exec(string(scriptContent)) // Execute the SQL commands as a string
+if err != nil {
+	log.Fatalf("Failed to execute SQL script: %v", err)
+}
+
 
 	// Route to serve the home page
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
