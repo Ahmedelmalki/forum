@@ -32,7 +32,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		fmt.Println("User registered successfully!")
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
 
@@ -69,7 +69,3 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
-
-// func PostsHandler(w http.ResponseWriter, r *http.Request) {
-// 	 http.ServeFile(w, r, "static/posts.html")
-// }
