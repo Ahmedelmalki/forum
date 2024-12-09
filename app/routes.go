@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Handler to process registration form submission
@@ -17,17 +19,23 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 
 		username := r.FormValue("username")
 		email := r.FormValue("email")
-		password := r.FormValue("password") // No encryption here
+		password := r.FormValue("password") 
+
+		hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+		if err != nil {
+			http.Error(w, "error hashing the password", http.StatusInternalServerError)
+		}
+		
 
 		if username == "" || email == "" || password == "" {
 			http.Error(w, "All fields are required", http.StatusBadRequest)
 			return
 		}
+		
 		query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-		_, err := db.Exec(query, username, email, password)
+		_, err = db.Exec(query, username, email, hashed)
 		if err != nil {
 			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
-			fmt.Println("error 2")
 			return
 		}
 
@@ -53,19 +61,22 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "User not found", http.StatusUnauthorized)
-				fmt.Println("here")
 			} else {
 				http.Error(w, "Database error", http.StatusInternalServerError)
 			}
 			return
 		}
 
-		// For simplicity, we're not hashing passwords here
-		if storedPassword != password {
-			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
-			return
+		err2 := bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
+		if err2 != nil {
+		    // If the password doesn't match the hash, respond with an Unauthorized status
+		    http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+		    return
 		}
+		
 		fmt.Printf("%s logged in successfully!\n", email)
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
+
+

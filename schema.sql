@@ -1,9 +1,9 @@
-
 -- Create Users Table
 CREATE TABLE IF NOT EXISTS  users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
+    -- note 
     password TEXT NOT NULL
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS posts (
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
      content TEXT NOT NULL,
      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

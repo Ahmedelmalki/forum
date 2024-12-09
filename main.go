@@ -25,20 +25,22 @@ func main() {
 	}
 
 	scriptFile, err := os.Open("schema.sql")
-if err != nil {
-	log.Fatalf("Failed to open SQL script file: %v", err)
-}
-defer scriptFile.Close()
+	//fmt.Println(&scriptFile)
+	if err != nil {
+		log.Fatalf("Failed to open SQL script file: %v", err)
+	}
+	defer scriptFile.Close()
 
-scriptContent, err := io.ReadAll(scriptFile) // Read the entire file content
-if err != nil {
-	log.Fatalf("Failed to read SQL script file: %v", err)
-}
+	scriptContent, err := io.ReadAll(scriptFile) // Read the entire file content
+	//fmt.Println(string(scriptContent))
+	if err != nil {
+		log.Fatalf("Failed to read SQL script file: %v", err)
+	}
 
-_, err = db.Exec(string(scriptContent)) // Execute the SQL commands as a string
-if err != nil {
-	log.Fatalf("Failed to execute SQL script: %v", err)
-}
+	_, err = db.Exec(string(scriptContent)) 
+	if err != nil {
+		log.Fatalf("Failed to execute SQL script: %v", err)
+	}
 
 
 	// Route to serve the home page
