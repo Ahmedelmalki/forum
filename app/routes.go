@@ -3,12 +3,11 @@ package forum
 import (
 	"database/sql"
 	"fmt"
-	"math/big"
+	"log"
 	"net/http"
-	"time"
 
+	"github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/exp/rand"
 )
 
 // Handler to process registration form submission
@@ -86,20 +85,20 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 
 func cookieMaker(w http.ResponseWriter) {
+	// create uuid
+	u, err := uuid.NewV4()
+	if err != nil {
+		log.Fatalf("failed to generate UUID: %v", err)
+	}
+
 	// Create and set a cookie
 	cookie := &http.Cookie{
 		Name:  "forum_session",
-		Value: randomBig128BitInt(),
+		Value: u.String(),
 		Path:  "/",
 	}
 	http.SetCookie(w, cookie)
 }
 
-func randomBig128BitInt()  string {
-	rand.Seed(uint64(time.Now().UnixNano()))
-	high := new(big.Int).SetUint64(rand.Uint64()) 
-	low := new(big.Int).SetUint64(rand.Uint64())  
 
-	high = high.Lsh(high, 64) 
-	return high.Or(high, low).String()
-}
+
