@@ -3,21 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Posts</title>
-    <style>
-      .btn {
-        font-size: 18px;
-        color: white;
-        background-color: #007bff;
-        text-decoration: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    </style>
+    <title>Forum - Home</title>
   </head>
   <body>
-    <h1>welcom</h1>
-    <p>there are no postes yet</p>
-    <a href="/" class="btn">Back to Home</a>
+    <header>
+      <link rel="stylesheet" href="/static/style.css" />
+      <h1>Welcome to the Forum</h1>
+      <a href="/login" class="login-btn">login</a>
+      <a href="/register" class="register-btn">register</a>
+    </header>
+
+    <div class="container">
+      <h2>Posts</h2>
+
+      <div class="filter-form">
+        <form action="/filter" method="GET">
+          <select name="category" id="category">
+            <option value="">Select Category</option>
+            <option value="tech">Tech</option>
+            <option value="science">Science</option>
+            <option value="Sport"></option>
+          </select>
+
+          <select name="liked" id="liked">
+            <option value="">Filter by Liked Posts</option>
+            <option value="true">Liked</option>
+            <option value="false">Disliked</option>
+          </select>
+
+
+          <button type="submit">Filter</button>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

@@ -9,11 +9,10 @@ import (
 	"net/http"
 	"os"
 
-	_ "github.com/mattn/go-sqlite3" // SQLite driver
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	// Connect to SQLite database
 	db, err := sql.Open("sqlite3", "./forum.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
@@ -25,14 +24,12 @@ func main() {
 	}
 
 	scriptFile, err := os.Open("schema.sql")
-	//fmt.Println(&scriptFile)
 	if err != nil {
 		log.Fatalf("Failed to open SQL script file: %v", err)
 	}
 	defer scriptFile.Close()
 
-	scriptContent, err := io.ReadAll(scriptFile) // Read the entire file content
-	//fmt.Println(string(scriptContent))
+	scriptContent, err := io.ReadAll(scriptFile) 
 	if err != nil {
 		log.Fatalf("Failed to read SQL script file: %v", err)
 	}
@@ -43,30 +40,24 @@ func main() {
 	}
 
 
-	// Route to serve the home page
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/home.html")
+		http.ServeFile(w, r, "static/posts.html")
 	})
 
-	// Route to serve the registration page
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/register.html")
 	})
 
-	// Route to handle registration form submission
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
-	// Handlers
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./static/login.html")
 	})
 	http.HandleFunc("/login/submit", forum.LoginHandler(db))
 
-	http.HandleFunc("/posts", func(w http.ResponseWriter, r *http.Request) {
-    http.ServeFile(w, r, "./static/posts.html")
-})
 
-	// Start server
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
 	fmt.Println("Server is running on http://localhost:8090")
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
