@@ -47,10 +47,11 @@ func main() {
 	http.HandleFunc("/login/submit", forum.LoginHandler(db))
 
 	http.HandleFunc("/newPost", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./static/newPost.html")
+    http.ServeFile(w, r, "./static/newPost.html")
 	})
 
 	http.HandleFunc("/newPost/submit", forum.NewPostHandler(db))
+
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 

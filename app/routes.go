@@ -96,30 +96,33 @@ func cookieMaker(w http.ResponseWriter) {
 
 func NewPostHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet {
-			// Serve the new post HTML page
-			http.ServeFile(w, r, "./templates/newPost.html")
-			return
-		}
-		if r.Method == http.MethodPost {
+		switch r.Method {
+		case http.MethodGet:
+			http.ServeFile(w, r, "./static/newPost.html")
+		case http.MethodPost:
 			title := r.FormValue("title")
 			category := r.FormValue("category")
 			content := r.FormValue("content")
 
-			if title == "" || content == "" || category == "" {
+			if title == "" || category == "" || content == "" {
 				http.Error(w, "All fields are required", http.StatusBadRequest)
 				return
 			}
+
 			query := "INSERT INTO posts (title, category, content) VALUES (?, ?, ?)"
-			_, err := db.Exec(query, title, category, content); if err != nil {
-				http.Error(w, "error adding post to the db", http.StatusInternalServerError)
+			_, err := db.Exec(query, title, category, content)
+			if err != nil {
+				log.Printf("Error adding post: %v", err)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
 				return
 			}
-			http.Redirect(w, r, "/posts", http.StatusSeeOther)
-		} else {
-			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	}
 }
+
 
 
