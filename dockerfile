@@ -10,11 +10,13 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o main .
 
-FROM scratch
+FROM alpine:latest
 
-COPY --from=builder /app/main /
+WORKDIR /
+
+COPY --from=builder /app/main .
 COPY --from=builder /lib /lib
 
-EXPOSE 8090
+EXPOSE 8089
 
-CMD ["/main"]
+CMD ["./main"]

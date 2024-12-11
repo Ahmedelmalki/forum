@@ -1,20 +1,21 @@
--- Create Users Table
+DROP TABLE IF EXISTS usere ;
+DROP TABLE IF EXISTS posts ;
+DROP TABLE IF EXISTS comments ;
+
+
 CREATE TABLE IF NOT EXISTS  users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
-    -- note 
     password TEXT NOT NULL
 );
 
--- Create Posts Table
-CREATE TABLE IF NOT EXISTS posts (
+CREATE TABLE posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    category TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS comments (

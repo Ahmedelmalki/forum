@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	forum "forum/app"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -13,8 +12,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./forum.db")
-	if err != nil {
+	db, err := sql.Open("sqlite3", "./forum.db") ; if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
 	defer db.Close()
@@ -23,19 +21,11 @@ func main() {
     log.Fatalf("Database connection error: %v", err)
 	}
 
-	scriptFile, err := os.Open("schema.sql")
-	if err != nil {
-		log.Fatalf("Failed to open SQL script file: %v", err)
-	}
-	defer scriptFile.Close()
-
-	scriptContent, err := io.ReadAll(scriptFile) 
-	if err != nil {
-		log.Fatalf("Failed to read SQL script file: %v", err)
+	 scriptContent , err := os.ReadFile("schema.sql"); if err != nil {
+		log.Fatal("error reading the schema")
 	}
 
-	_, err = db.Exec(string(scriptContent)) 
-	if err != nil {
+	_, err = db.Exec(string(scriptContent)) ; if err != nil {
 		log.Fatalf("Failed to execute SQL script: %v", err)
 	}
 
@@ -53,10 +43,18 @@ func main() {
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./static/login.html")
 	})
+
 	http.HandleFunc("/login/submit", forum.LoginHandler(db))
 
+	http.HandleFunc("/newPost", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./static/newPost.html")
+	})
+
+	http.HandleFunc("/newPost/submit", forum.NewPostHandler(db))
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
+	
 
 	fmt.Println("Server is running on http://localhost:8090")
 	log.Fatal(http.ListenAndServe(":8090", nil))

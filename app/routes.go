@@ -10,12 +10,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Handler to process registration form submission
 func RegisterHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			fmt.Println("error 1")
 			return
 		}
 
@@ -41,7 +39,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		fmt.Println("User registered successfully!")
+		fmt.Printf("%s registered successfully\n", email)
 		cookieMaker(w)
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
@@ -57,7 +55,6 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		// Check if the user exists in the database
 		var storedPassword string
 		query := "SELECT password FROM users WHERE email = ?"
 		err := db.QueryRow(query, email).Scan(&storedPassword)
@@ -72,7 +69,6 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 		err2 := bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
 		if err2 != nil {
-		    // If the password doesn't match the hash, respond with an Unauthorized status
 		    http.Error(w, "Invalid credentials", http.StatusUnauthorized)
 		    return
 		}
@@ -85,13 +81,11 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 
 func cookieMaker(w http.ResponseWriter) {
-	// create uuid
 	u, err := uuid.NewV4()
 	if err != nil {
 		log.Fatalf("failed to generate UUID: %v", err)
 	}
 
-	// Create and set a cookie
 	cookie := &http.Cookie{
 		Name:  "forum_session",
 		Value: u.String(),
@@ -100,5 +94,32 @@ func cookieMaker(w http.ResponseWriter) {
 	http.SetCookie(w, cookie)
 }
 
+func NewPostHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			// Serve the new post HTML page
+			http.ServeFile(w, r, "./templates/newPost.html")
+			return
+		}
+		if r.Method == http.MethodPost {
+			title := r.FormValue("title")
+			category := r.FormValue("category")
+			content := r.FormValue("content")
+
+			if title == "" || content == "" || category == "" {
+				http.Error(w, "All fields are required", http.StatusBadRequest)
+				return
+			}
+			query := "INSERT INTO posts (title, category, content) VALUES (?, ?, ?)"
+			_, err := db.Exec(query, title, category, content); if err != nil {
+				http.Error(w, "error adding post to the db", http.StatusInternalServerError)
+				return
+			}
+			http.Redirect(w, r, "/posts", http.StatusSeeOther)
+		} else {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		}
+	}
+}
 
 
