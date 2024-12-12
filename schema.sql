@@ -1,8 +1,3 @@
-DROP TABLE IF EXISTS usere ;
-DROP TABLE IF EXISTS posts ;
-DROP TABLE IF EXISTS comments ;
-
-
 CREATE TABLE IF NOT EXISTS  users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
@@ -10,7 +5,7 @@ CREATE TABLE IF NOT EXISTS  users (
     password TEXT NOT NULL
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
@@ -26,4 +21,12 @@ CREATE TABLE IF NOT EXISTS comments (
      post_id INTEGER NOT NULL,
      FOREIGN KEY (user_id) REFERENCES users (id)
      FOREIGN KEY (post_id) REFERENCES posts (id)
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+
 );

@@ -33,14 +33,21 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		}
 		
 		query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-		_, err = db.Exec(query, username, email, hashed)
+		res, err := db.Exec(query, username, email, hashed)
 		if err != nil {
 			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
 			return
 		}
-
+		user_id,err := res.LastInsertId(); if err != nil {
+			fmt.Println(err)
+			return
+		}
+		cookie := cookieMaker(w)
+		err = insretCookie(db, int(user_id), cookie) ; if err != nil {
+			fmt.Println(err)
+			return
+		}
 		fmt.Printf("%s registered successfully\n", email)
-		cookieMaker(w)
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
@@ -55,9 +62,10 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		var storedPassword string
-		query := "SELECT password FROM users WHERE email = ?"
-		err := db.QueryRow(query, email).Scan(&storedPassword)
+		 var storedPassword string 
+		 var user_id   int
+		query := "SELECT password, id FROM users WHERE email = ?"
+		err := db.QueryRow(query, email).Scan(&storedPassword, &user_id)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "User not found", http.StatusUnauthorized)
@@ -73,14 +81,27 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		    return
 		}
 		
+		cookie := cookieMaker(w)
+		err = insretCookie(db, user_id, cookie) ; if err != nil {
+			fmt.Println(err)
+			return
+		}
+
 		fmt.Printf("%s logged in successfully!\n", email)
-		cookieMaker(w)
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
 }
 
+func insretCookie(db *sql.DB, user_id int, cookie string) error {
+	query := `INSERT INTO sessions (user_id, session) VALUES (?, ?)`
+	_, err := db.Exec(query, user_id, cookie) ; if err != nil {
+		return err
+	}
+	
+	return nil
+}
 
-func cookieMaker(w http.ResponseWriter) {
+func cookieMaker(w http.ResponseWriter) string{
 	u, err := uuid.NewV4()
 	if err != nil {
 		log.Fatalf("failed to generate UUID: %v", err)
@@ -92,6 +113,7 @@ func cookieMaker(w http.ResponseWriter) {
 		Path:  "/",
 	}
 	http.SetCookie(w, cookie)
+	return u.String()
 }
 
 func NewPostHandler(db *sql.DB) http.HandlerFunc {
