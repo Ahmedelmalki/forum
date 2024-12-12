@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gofrs/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -42,8 +41,8 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			fmt.Println(err)
 			return
 		}
-		cookie := cookieMaker(w)
-		err = insretCookie(db, int(user_id), cookie) ; if err != nil {
+		cookie := CookieMaker(w)
+		err = InsretCookie(db, int(user_id), cookie) ; if err != nil {
 			fmt.Println(err)
 			return
 		}
@@ -81,46 +80,38 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		    return
 		}
 		
-		cookie := cookieMaker(w)
-		err = insretCookie(db, user_id, cookie) ; if err != nil {
+		cookie := CookieMaker(w)
+		err = InsretCookie(db, user_id, cookie) ; if err != nil {
 			fmt.Println(err)
 			return
 		}
-
+		fmt.Println(user_id, cookie)
 		fmt.Printf("%s logged in successfully!\n", email)
 		http.Redirect(w, r, "/posts", http.StatusSeeOther)
 	}
-}
-
-func insretCookie(db *sql.DB, user_id int, cookie string) error {
-	query := `INSERT INTO sessions (user_id, session) VALUES (?, ?)`
-	_, err := db.Exec(query, user_id, cookie) ; if err != nil {
-		return err
-	}
-	
-	return nil
-}
-
-func cookieMaker(w http.ResponseWriter) string{
-	u, err := uuid.NewV4()
-	if err != nil {
-		log.Fatalf("failed to generate UUID: %v", err)
-	}
-
-	cookie := &http.Cookie{
-		Name:  "forum_session",
-		Value: u.String(),
-		Path:  "/",
-	}
-	http.SetCookie(w, cookie)
-	return u.String()
 }
 
 func NewPostHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			http.ServeFile(w, r, "./static/newPost.html")
+			fmt.Println("jjjjjjjjjjjjjjjjjj")
+				// Check for cookie and validate it here
+            cookie, err := r.Cookie("forum_session")
+            if err != nil {
+                http.Error(w, "only logged-in users are able to post", 403)
+				return
+            }
+
+            // Validate cookie with database
+            sessionID := cookie.Value
+            query1 := `SELECT user_id FROM sessions WHERE session = ?`
+            var userID int
+            err = db.QueryRow(query1, sessionID).Scan(&userID)
+            if err != nil {
+                fmt.Println("error")
+				return
+            }
 		case http.MethodPost:
 			title := r.FormValue("title")
 			category := r.FormValue("category")
@@ -139,12 +130,9 @@ func NewPostHandler(db *sql.DB) http.HandlerFunc {
 				return
 			}
 
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			 http.ServeFile(w, r, "./static/newPost.html")
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	}
 }
-
-
-
