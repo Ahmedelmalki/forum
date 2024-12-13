@@ -30,6 +30,17 @@
             <option value="true">Liked</option>
             <option value="false">Disliked</option>
           </select>
+          <!-- new stuff -->
+           <script src="/js/fetchPosts.js"></script>
+          {{range .}}
+          <div class="post">
+            <h2>{{.Title}}</h2>
+            <div class="meta">
+              Category: {{.Category}} | Posted on: {{.CreatedAt}}
+            </div>
+            <p>{{.Content}}</p>
+          </div>
+          {{end}}
 
           <button type="submit">Filter</button>
         </form>

@@ -33,9 +33,15 @@ func main() {
 		log.Fatalf("Failed to execute SQL script: %v", err)
 	}
 
+	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	http.ServeFile(w, r, "static/posts.html")
+	// })
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/posts.html")
+		http.ServeFile(w, r, "/static/posts.html")
 	})
+
+	http.HandleFunc("/posts", forum.APIHandler(db))
 
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/register.html")
