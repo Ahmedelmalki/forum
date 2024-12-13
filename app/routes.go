@@ -93,26 +93,11 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 func NewPostHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			fmt.Println("jjjjjjjjjjjjjjjjjj")
-				// Check for cookie and validate it here
-            cookie, err := r.Cookie("forum_session")
-            if err != nil {
-                http.Error(w, "only logged-in users are able to post", 403)
-				return
-            }
-
-            // Validate cookie with database
-            sessionID := cookie.Value
-            query1 := `SELECT user_id FROM sessions WHERE session = ?`
-            var userID int
-            err = db.QueryRow(query1, sessionID).Scan(&userID)
-            if err != nil {
-                fmt.Println("error")
-				return
-            }
-		case http.MethodPost:
+		if r.Method == http.MethodGet {
+			//http.ServeFile(w, r, "./static/newPost.html")
+			fmt.Println("000000000000000")
+		} else if r.Method == http.MethodPost {
+			fmt.Println("1111111111111111111111111")
 			title := r.FormValue("title")
 			category := r.FormValue("category")
 			content := r.FormValue("content")
@@ -130,8 +115,8 @@ func NewPostHandler(db *sql.DB) http.HandlerFunc {
 				return
 			}
 
-			 http.ServeFile(w, r, "./static/newPost.html")
-		default:
+			http.ServeFile(w, r, "./static/newPost.html")
+		} else {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	}
