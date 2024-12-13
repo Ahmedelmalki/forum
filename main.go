@@ -47,19 +47,36 @@ func main() {
 		http.ServeFile(w, r, "./static/login.html")
 	})
 
-	http.HandleFunc("/login/submit", forum.LoginHandler(db))
-
-	http.HandleFunc("/newPost", func(w http.ResponseWriter, r *http.Request) {
-		_, err := forum.ValidateCookie(db, w, r)
-		if err != nil {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.HandleFunc("/login/submit", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			forum.LoginHandler(db)(w, r)
+		} else {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
-		http.ServeFile(w, r, "./static/newPost.html")
 	})
 
-	http.HandleFunc("/newPost/submit", forum.NewPostHandler(db))
+	http.HandleFunc("/newPost", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			_, err := forum.ValidateCookie(db, w, r)
+			if err != nil {
+				http.Redirect(w, r, "/posts", http.StatusSeeOther)
+				return
+			}
+			http.ServeFile(w, r, "./static/newPost.html")
+		} else if r.Method == http.MethodPost {
+			forum.PostNewPostHandler(db)(w, r)
+		} else {
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	})
 
-	http.HandleFunc("/logout", forum.LogOutHandler(db))
+	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			forum.LogOutHandler(db)(w, r)
+		} else {
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	})
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
