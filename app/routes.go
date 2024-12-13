@@ -10,7 +10,6 @@ import (
 )
 
 func RegisterHandler(db *sql.DB) http.HandlerFunc {
-	fmt.Println("kkkkkkkkkkkkkkkkkkk")
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -130,7 +129,6 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 }
 
 func LogOutHandler(db *sql.DB) http.HandlerFunc {
-	fmt.Println("here")
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
