@@ -38,19 +38,19 @@ func main() {
 	// })
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/posts.html")
+		http.ServeFile(w, r, "static/templates/posts.html")
 	})
 
 	http.HandleFunc("/posts", forum.APIHandler(db))
 
 	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/register.html")
+		http.ServeFile(w, r, "static/templates/register.html")
 	})
 
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "static/login.html")
+		http.ServeFile(w, r, "static/templates/login.html")
 	})
 
 	http.HandleFunc("/login/submit", func(w http.ResponseWriter, r *http.Request) {
@@ -67,10 +67,9 @@ func main() {
 			if err != nil {
 				fmt.Println("1111111")
 				http.Redirect(w, r, "/", http.StatusSeeOther)
-				return
 			}
 				fmt.Println("2222222222222222222")
-			http.ServeFile(w, r, "static/newPost.html")
+			http.ServeFile(w, r, "static/templates/newPost.html")
 		} else if r.Method == http.MethodPost {
 				fmt.Println("333333333333333")
 			forum.PostNewPostHandler(db)(w, r)
@@ -87,7 +86,7 @@ func main() {
 		}
 	})
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 
 	fmt.Println("Server is running on http://localhost:8090")

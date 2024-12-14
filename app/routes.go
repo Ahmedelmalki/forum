@@ -2,6 +2,7 @@ package forum
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -34,6 +35,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		res, err := db.Exec(query, username, email, hashed)
 		if err != nil {
 			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
+			fmt.Println("here")
 			return
 		}
 		user_id, err := res.LastInsertId()
@@ -52,6 +54,11 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
+type LoginCredentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func LoginHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -59,13 +66,27 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		email := r.FormValue("email")
-		password := r.FormValue("password")
+		var credentials LoginCredentials
 
+		// Decode JSON body
+		err := json.NewDecoder(r.Body).Decode(&credentials)
+		fmt.Println(credentials)
+		if err != nil {
+			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+			return
+		}
+
+		email := credentials.Email
+		password := credentials.Password
+
+		if email == "" || password == "" {
+			http.Error(w, "Email and password are required", http.StatusBadRequest)
+			return
+		}
 		var storedPassword string
 		var user_id int
 		query := "SELECT password, id FROM users WHERE email = ?"
-		err := db.QueryRow(query, email).Scan(&storedPassword, &user_id)
+		err = db.QueryRow(query, email).Scan(&storedPassword, &user_id)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				http.Error(w, "User not found", http.StatusUnauthorized)
@@ -89,7 +110,6 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		}
 		fmt.Println(user_id, cookie)
 		fmt.Printf("%s logged in successfully!\n", email)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
@@ -142,7 +162,7 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		sessionID := cookie.Value
-		fmt.Printf("Method: %s Cookie: %+v\n", r.Method ,cookie)
+		fmt.Printf("Method: %s Cookie: %+v\n", r.Method, cookie)
 		query := `DELETE FROM sessions WHERE session = ?`
 		if err != nil {
 			log.Printf("Error invalidating session: %v", err)
