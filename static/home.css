@@ -1,0 +1,159 @@
+/* General styling */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #1e1e2f, #3a3a52);
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header Styling */
+header {
+  width: 75%;
+  padding: 20px;
+  display: inherit;
+  justify-content: space-evenly;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6);
+}
+
+header h1 {
+  font-size: 24px;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+header a {
+  margin-left: 15px;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: white;
+  background: linear-gradient(45deg, #007BFF, #0056b3);
+  border-radius: 5px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+}
+
+header a:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(45deg, #0056b3, #007BFF);
+}
+
+.login-btn { background: linear-gradient(45deg, #6c757d, #343a40); }
+.login-btn:hover { background: linear-gradient(45deg, #495057, #212529); }
+
+/* Main container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* Posts section */
+#posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 75%;
+}
+
+/* Post cards */
+.post-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.1);
+  perspective: 1000px;
+  transform: rotateX(0deg) rotateY(0deg) scale(1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-card:hover {
+  transform: rotateX(4deg) rotateY(-4deg) scale(1.05);
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.post-content {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  background: linear-gradient(45deg, #28a745, #218838);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+}
+
+.post-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(45deg, #218838, #28a745);
+}
+
+.post-likes {
+  font-size: 12px;
+  color: #ffc107;
+}
+
+/* Log Out Button */
+.log-out-btn {
+  background: linear-gradient(45deg, #dc3545, #c82333);
+  border-radius: 5px;
+  color: white;
+  border: none;
+  margin-top: 20px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.log-out-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(45deg, #c82333, #dc3545);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  header a {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .post-card {
+    padding: 15px;
+  }
+
+  .post-title {
+    font-size: 16px;
+  }
+}

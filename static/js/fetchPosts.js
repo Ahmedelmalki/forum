@@ -2,14 +2,14 @@
 async function fetchPosts() {
   try {
     const response = await fetch("/posts");
-    console.log("feching done")
+    console.log("Fetching done");
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const posts = await response.json();
-    console.log("111111111111111")
+    console.log("Posts fetched successfully");
 
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = ""; // Clear any existing content
@@ -20,19 +20,25 @@ async function fetchPosts() {
     }
 
     posts.forEach((post) => {
-      console.log("222222222222222222")
-      const postDiv = document.createElement("div");
-      postDiv.className = "post";
+      console.log("Rendering post");
 
-      postDiv.innerHTML = `
-        <h2>${escapeHTML(post.Title)}</h2>
+      const postCard = document.createElement("div");
+      postCard.className = "post-card";
+
+      postCard.innerHTML = `
+        <div class="post-title">${escapeHTML(post.Title)}</div>
         <div class="meta">
           Category: ${escapeHTML(post.Category)} | 
           Posted on: ${new Date(post.CreatedAt).toLocaleString()}
         </div>
-        <p>${escapeHTML(post.Content)}</p>
+        <div class="post-content">${escapeHTML(post.Content)}</div>
+        <div class="post-actions">
+          <button class="post-btn">Like</button>
+          <div class="post-likes">${post.Likes || 0} likes</div>
+        </div>
       `;
-      postsContainer.appendChild(postDiv);
+
+      postsContainer.appendChild(postCard);
     });
   } catch (error) {
     console.error("Error fetching posts:", error);

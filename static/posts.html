@@ -4,41 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forum - Home</title>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/home.css" />
   </head>
   <body>
     <header>
-      <h1>Welcome to the Forum</h1>
       <a href="/login" class="login-btn">login</a>
       <a href="/register" class="register-btn">register</a>
+      <h1>Welcome to the Forum</h1>
       <a href="/newPost" class="newPost-btn">create new a post</a>
     </header>
     <div class="container">
       <h2>Posts</h2>
-
-      <!-- <div class="filter-form">
-        <form>
-          <select name="category" id="category">
-            <option value="">Select Category</option>
-            <option value="tech">Tech</option>
-            <option value="science">Science</option>
-            <option value="Sport">Sport</option>
-          </select>
-
-          <select name="liked" id="liked">
-            <option value="">Filter by Liked Posts</option>
-            <option value="true">Liked</option>
-            <option value="false">Disliked</option>
-          </select>
-
-          <button type="button" id="filterBtn">Filter</button>
-        </form> -->
-        <form action="/logout" method="POST">
-          <button type="submit" class="log-out-btn">Log Out</button>
-        </form>
       </div>
-
+      
       <div id="posts"></div>
+      <form action="/logout" method="POST">
+        <button type="submit" class="log-out-btn">Log Out</button>
+      </form>
     </div>
 
     <script src="/static/js/fetchPosts.js">
