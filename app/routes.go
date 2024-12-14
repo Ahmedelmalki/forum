@@ -142,9 +142,7 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		sessionID := cookie.Value
-		fmt.Printf("Method: %s\n", r.Method)
-		fmt.Printf("Cookie: %+v\n", cookie)
-		fmt.Printf("SessionID: %s\n", sessionID)
+		fmt.Printf("Method: %s Cookie: %+v\n", r.Method ,cookie)
 		query := `DELETE FROM sessions WHERE session = ?`
 		if err != nil {
 			log.Printf("Error invalidating session: %v", err)
@@ -163,6 +161,6 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 			MaxAge: -1,
 		})
 
-		http.Redirect(w, r, "/posts", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
