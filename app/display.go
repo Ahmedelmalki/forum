@@ -17,7 +17,7 @@ type Post struct {
 }
 
 func FetchPosts(db *sql.DB) ([]Post, error) {
-	query := "SELECT id, title, content, category, created_at, FROM posts ORDER BY created_at DESC"
+	query := "SELECT id, title, content, category, created_at FROM posts ORDER BY created_at DESC"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -53,21 +53,3 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(posts)
 	}
 }
-
-
-// func PostsHandler(db *sql.DB) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request){
-// 		posts, err := FetchPosts(db); if err != nil {
-// 			http.Error(w, "Error fetching posts", http.StatusInternalServerError)
-// 			return
-// 		}
-// 		tmpl, err := template.ParsFiles("static/posts.html"); if err != nil {
-// 			http.Error(w, "Error loading template", http.StatusInternalServerError)
-// 			return
-// 		}
-// 		err = tmpl.Execute(w, posts)
-// 		if err != nil {
-// 			http.Error(w, "Error rendering template", http.StatusInternalServerError)
-// 		}
-// 	}
-// }

@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forum - Home</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
     <header>
-      <link rel="stylesheet" href="/static/style.css" />
       <h1>Welcome to the Forum</h1>
       <a href="/login" class="login-btn">login</a>
       <a href="/register" class="register-btn">register</a>
@@ -16,13 +16,13 @@
     <div class="container">
       <h2>Posts</h2>
 
-      <div class="filter-form">
-        <form action="/filter" method="GET">
+      <!-- <div class="filter-form">
+        <form>
           <select name="category" id="category">
             <option value="">Select Category</option>
             <option value="tech">Tech</option>
             <option value="science">Science</option>
-            <option value="Sport"></option>
+            <option value="Sport">Sport</option>
           </select>
 
           <select name="liked" id="liked">
@@ -30,24 +30,19 @@
             <option value="true">Liked</option>
             <option value="false">Disliked</option>
           </select>
-          <!-- new stuff -->
-           <script src="/js/fetchPosts.js"></script>
-          {{range .}}
-          <div class="post">
-            <h2>{{.Title}}</h2>
-            <div class="meta">
-              Category: {{.Category}} | Posted on: {{.CreatedAt}}
-            </div>
-            <p>{{.Content}}</p>
-          </div>
-          {{end}}
 
-          <button type="submit">Filter</button>
-        </form>
+          <button type="button" id="filterBtn">Filter</button>
+        </form> -->
         <form action="/logout" method="POST">
           <button type="submit" class="log-out-btn">Log Out</button>
         </form>
       </div>
+
+      <div id="posts"></div>
     </div>
+
+    <script src="/static/js/fetchPosts.js">
+      console.log("here")
+    </script>
   </body>
 </html>

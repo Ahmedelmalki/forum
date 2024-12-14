@@ -38,7 +38,7 @@ func main() {
 	// })
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "/static/posts.html")
+		http.ServeFile(w, r, "static/posts.html")
 	})
 
 	http.HandleFunc("/posts", forum.APIHandler(db))
@@ -50,7 +50,7 @@ func main() {
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./static/login.html")
+		http.ServeFile(w, r, "static/login.html")
 	})
 
 	http.HandleFunc("/login/submit", func(w http.ResponseWriter, r *http.Request) {
@@ -65,11 +65,14 @@ func main() {
 		if r.Method == http.MethodGet {
 			_, err := forum.ValidateCookie(db, w, r)
 			if err != nil {
-				http.Redirect(w, r, "/posts", http.StatusSeeOther)
+				fmt.Println("shit went wrong her1111111")
+				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}
-			http.ServeFile(w, r, "./static/newPost.html")
+				fmt.Println("shit went wrong here 2222222222222222222")
+			http.ServeFile(w, r, "static/newPost.html")
 		} else if r.Method == http.MethodPost {
+				fmt.Println("shit went wrong here 333333333333333")
 			forum.PostNewPostHandler(db)(w, r)
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -85,6 +88,7 @@ func main() {
 	})
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 
 	fmt.Println("Server is running on http://localhost:8090")
 	log.Fatal(http.ListenAndServe(":8090", nil))
