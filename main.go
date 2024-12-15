@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -23,19 +24,20 @@ func main() {
 		log.Fatalf("Database connection error: %v", err)
 	}
 
-	scriptContent, err := os.ReadFile("schema.sql")
+	scriptFile, err := os.Open("schema.sql")
 	if err != nil {
-		log.Fatal("error reading the schema")
+		log.Fatalf("Failed to open SQL script file: %v", err)
 	}
+	defer scriptFile.Close()
 
+	scriptContent, err := io.ReadAll(scriptFile)
+	if err != nil {
+		log.Fatalf("Failed to read SQL script file: %v", err)
+	}
 	_, err = db.Exec(string(scriptContent))
 	if err != nil {
 		log.Fatalf("Failed to execute SQL script: %v", err)
 	}
-
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	http.ServeFile(w, r, "static/posts.html")
-	// })
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/templates/posts.html")
