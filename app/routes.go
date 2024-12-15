@@ -171,6 +171,9 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		res, err := db.Exec(query, sessionID)
+		if err != nil {
+			fmt.Println("error executing the query")
+		}
 		rows, _ := res.RowsAffected()
 		fmt.Println(rows)
 
