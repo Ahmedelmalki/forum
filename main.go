@@ -65,13 +65,10 @@ func main() {
 		if r.Method == http.MethodGet {
 			_, err := forum.ValidateCookie(db, w, r)
 			if err != nil {
-				fmt.Println("1111111")
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 			}
-				fmt.Println("2222222222222222222")
 			http.ServeFile(w, r, "static/templates/newPost.html")
 		} else if r.Method == http.MethodPost {
-				fmt.Println("333333333333333")
 			forum.PostNewPostHandler(db)(w, r)
 		} else {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

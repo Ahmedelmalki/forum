@@ -10,16 +10,30 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type RegisterCredenials struct {
+	UserName string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func RegisterHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 			return
 		}
+		fmt.Println("111111111111111111")
+		var credentials RegisterCredenials
+		err := json.NewDecoder(r.Body).Decode(&credentials)
+		if err != nil {
+			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+			return
+		}
 
-		username := r.FormValue("username")
-		email := r.FormValue("email")
-		password := r.FormValue("password")
+		 username := credentials.UserName
+		 email := credentials.Email
+		 password := credentials.Password
+		 fmt.Println("###############",username, email, password)
 
 		hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 		if err != nil {
@@ -50,7 +64,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		fmt.Printf("%s registered successfully\n", email)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		//http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
@@ -70,7 +84,6 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 		// Decode JSON body
 		err := json.NewDecoder(r.Body).Decode(&credentials)
-		fmt.Println(credentials)
 		if err != nil {
 			http.Error(w, "Invalid JSON", http.StatusBadRequest)
 			return
