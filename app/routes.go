@@ -22,7 +22,6 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 			return
 		}
-		fmt.Println("111111111111111111")
 		var credentials RegisterCredenials
 		err := json.NewDecoder(r.Body).Decode(&credentials)
 		if err != nil {
@@ -30,10 +29,10 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		 username := credentials.UserName
-		 email := credentials.Email
-		 password := credentials.Password
-		 fmt.Println("###############",username, email, password)
+		username := credentials.UserName
+		email := credentials.Email
+		password := credentials.Password
+		fmt.Println("###############", username, email, password)
 
 		hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 		if err != nil {
@@ -49,7 +48,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		res, err := db.Exec(query, username, email, hashed)
 		if err != nil {
 			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
-			fmt.Println("here")
+			fmt.Println(err)
 			return
 		}
 		user_id, err := res.LastInsertId()
@@ -64,7 +63,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		fmt.Printf("%s registered successfully\n", email)
-		//http.Redirect(w, r, "/", http.StatusSeeOther)
+		// http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 

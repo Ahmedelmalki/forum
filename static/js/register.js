@@ -1,5 +1,4 @@
-console.log("working");
-const form = document.querySelectorAll(".container");
+const form = document.querySelector(".container");
 const botton = document.querySelector(".submit");
 botton.addEventListener("click", async () => {
   const usernameInput = document.getElementById("username");
@@ -11,22 +10,22 @@ botton.addEventListener("click", async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: jQuery.stringfiy({
+      body: JSON.stringify({
         username: usernameInput.value,
         email: emailInput.value,
         password: passwordInput.value,
       }),
     });
-    if (!response) {
+    if (!response.ok) {
       const err = document.querySelector(".error-mssg");
       if (!err) {
         const errmssg = document.createElement("p");
         errmssg.className = "error-mssg";
         errmssg.innerHTML = "error registring please try again";
         form.appendChild(errmssg);
-      } else {
-        window.location.href = "/";
       }
+    } else {
+      window.location.href = "/";
     }
   } catch (err) {
     console.log(err);
