@@ -138,6 +138,21 @@ h2 {
   font-size: 12px;
   color: #ffc107;
 }
+/*Comments */
+.comment-section {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.1);
+  perspective: 1000px;
+  transform: rotateX(0deg) rotateY(0deg) scale(1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.post-comments {
+  font-size: 12px;
+  color: #007bff;
+}
 
 /* Log Out Button */
 .log-out-btn {

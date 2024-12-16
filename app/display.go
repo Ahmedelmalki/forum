@@ -17,6 +17,15 @@ type Post struct {
 	CreatedAt time.Time
 }
 
+type Comment struct {
+    ID        int       `json:"id"`
+    PostID    int       `json:"post_id"`
+    UserID    int       `json:"user_id"`
+    Content   string    `json:"content"`
+    CreatedAt time.Time `json:"created_at"`
+}
+
+
 func FetchPosts(db *sql.DB) ([]Post, error) {
 	query := "SELECT id, username, title, content, category, created_at FROM posts ORDER BY created_at DESC"
 	rows, err := db.Query(query)
@@ -53,4 +62,74 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(posts)
 	}
+}
+
+// CommentHandler handles comments
+
+
+func CreateComment(db *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        
+		userID, authenticated := ValidateCookie(db, w,r)
+        if authenticated != nil {
+            http.Error(w, "Unauthorized: User must be logged in to comment", http.StatusUnauthorized)
+            return
+        }
+
+		var comment Comment
+        
+        err := json.NewDecoder(r.Body).Decode(&comment)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusBadRequest)
+            return
+        }
+
+        stmt, err := db.Prepare("INSERT INTO comments(post_id, user_id, content, created_at) VALUES(?, ?, ?, ?)")
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer stmt.Close()
+
+		comment.UserID = userID
+
+		if comment.Content == "" {
+			http.Error(w, "Need to add a comment", http.StatusBadRequest)
+			return
+		}
+
+        _, err = stmt.Exec(comment.PostID, comment.UserID, comment.Content, time.Now())
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        w.WriteHeader(http.StatusCreated)
+    }
+}
+
+func GetComments(db *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        postID := r.URL.Query().Get("post_id")
+        rows, err := db.Query("SELECT id, user_id, content, created_at FROM comments WHERE post_id = ?", postID)
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        defer rows.Close()
+
+        var comments []Comment
+        for rows.Next() {
+            var comment Comment
+            err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt)
+            if err != nil {
+                http.Error(w, err.Error(), http.StatusInternalServerError)
+                return
+            }
+            comments = append(comments, comment)
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        json.NewEncoder(w).Encode(comments)
+    }
 }
