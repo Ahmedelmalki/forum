@@ -162,8 +162,12 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		title := r.FormValue("title")
 		category := r.FormValue("category")
 		content := r.FormValue("content")
-		if title == "" || category == "" || content == "" {
+		if title == "" || category == "" || content == ""  {
 			http.Error(w, "All fields are required", http.StatusBadRequest)
+			return
+		}
+		if len(title) > 50 || len(content) > 1000  {
+			http.Error(w, "don't miss with the html plz", http.StatusBadRequest)
 			return
 		}
 

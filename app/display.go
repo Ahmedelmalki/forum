@@ -46,7 +46,6 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var user_id int
 		cookie, err := r.Cookie("forum_session")
-		fmt.Println("################--Cookie : ", cookie)
 		if err != nil {
 			user_id = 0
 		} else {
@@ -57,15 +56,13 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 				user_id = 0
 			}
 		}
-		fmt.Println("Error : ", err)
-		posts, err := FetchPosts(db) // Use the FetchPosts function from the earlier example
+		posts, err := FetchPosts(db) 
 		if err != nil {
 			http.Error(w, "Error fetching posts", http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Println("##########-id", user_id)
 		json.NewEncoder(w).Encode([]any{posts, user_id})
 	}
 }

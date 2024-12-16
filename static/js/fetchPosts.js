@@ -24,6 +24,10 @@ async function fetchPosts() {
       document.querySelectorAll(".loged").forEach((elem) => {
         elem.style.display = "none";
       });
+    } else {
+      document.querySelectorAll(".unloged").forEach((elem) => {
+        elem.style.display = "none";
+      });
     }
 
     posts[0].forEach((post) => {
