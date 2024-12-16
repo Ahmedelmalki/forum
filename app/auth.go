@@ -37,7 +37,7 @@ func CookieMaker(w http.ResponseWriter) string {
 func ValidateCookie(db *sql.DB, w http.ResponseWriter, r *http.Request) (int, error) {
 	cookie, err := r.Cookie("forum_session")
 	if err != nil {
-		return 0, errors.New("error")
+		return 0, err
 	}
 	sessionID := cookie.Value
 	query1 := `SELECT user_id FROM sessions WHERE session = ?`

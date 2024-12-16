@@ -10,7 +10,7 @@ import (
 
 type Post struct {
 	ID        int
-	UserName string
+	UserName  string
 	Title     string
 	Content   string
 	Category  string
@@ -44,6 +44,20 @@ func FetchPosts(db *sql.DB) ([]Post, error) {
 // APIHandler serves the posts as JSON
 func APIHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		var user_id int
+		cookie, err := r.Cookie("forum_session")
+		fmt.Println("################--Cookie : ", cookie)
+		if err != nil {
+			user_id = 0
+		} else {
+			sessionID := cookie.Value
+			query1 := `SELECT user_id FROM sessions WHERE session = ?`
+			err = db.QueryRow(query1, sessionID).Scan(&user_id)
+			if err != nil {
+				user_id = 0
+			}
+		}
+		fmt.Println("Error : ", err)
 		posts, err := FetchPosts(db) // Use the FetchPosts function from the earlier example
 		if err != nil {
 			http.Error(w, "Error fetching posts", http.StatusInternalServerError)
@@ -51,6 +65,7 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(posts)
+		fmt.Println("##########-id", user_id)
+		json.NewEncoder(w).Encode([]any{posts, user_id})
 	}
 }

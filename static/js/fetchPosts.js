@@ -18,8 +18,15 @@ async function fetchPosts() {
       postsContainer.innerHTML = "<p>No posts found.</p>";
       return;
     }
+    console.log(posts[1]);
 
-    posts.forEach((post) => {
+    if (posts[1] != 0) {
+      document.querySelectorAll(".loged").forEach((elem) => {
+        elem.style.display = "none";
+      });
+    }
+
+    posts[0].forEach((post) => {
       console.log("Rendering post");
 
       const postCard = document.createElement("div");
