@@ -32,7 +32,6 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		username := credentials.UserName
 		email := credentials.Email
 		password := credentials.Password
-		fmt.Println("###############", username, email, password)
 
 		hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 		if err != nil {
@@ -138,6 +137,26 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Unable to parse form data", http.StatusBadRequest)
 			return
 		}
+		cookie, err := r.Cookie("forum_session")
+		if err != nil {
+			return
+		}
+		var idForUsername int
+		var userName string
+		query1 := `SELECT id FROM sessions WHERE session= ?;`
+		err = db.QueryRow(query1, cookie.Value).Scan(&idForUsername)
+		fmt.Println(idForUsername)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		query2 := `SELECT username FROM users WHERE id= ?`
+		err = db.QueryRow(query2, idForUsername).Scan(&userName)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Print(userName)
 
 		title := r.FormValue("title")
 		category := r.FormValue("category")
