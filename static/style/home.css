@@ -1,6 +1,6 @@
 /* General styling */
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
   background: linear-gradient(135deg, #1e1e2f, #3a3a52);
@@ -33,7 +33,7 @@ header a {
   padding: 10px 15px;
   text-decoration: none;
   color: white;
-  background: linear-gradient(45deg, #007BFF, #0056b3);
+  background: linear-gradient(45deg, #007bff, #0056b3);
   border-radius: 5px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
@@ -41,11 +41,15 @@ header a {
 
 header a:hover {
   transform: translateY(-3px);
-  background: linear-gradient(45deg, #0056b3, #007BFF);
+  background: linear-gradient(45deg, #0056b3, #007bff);
 }
 
-.login-btn { background: linear-gradient(45deg, #6c757d, #343a40); }
-.login-btn:hover { background: linear-gradient(45deg, #495057, #212529); }
+.login-btn {
+  background: linear-gradient(45deg, #6c757d, #343a40);
+}
+.login-btn:hover {
+  background: linear-gradient(45deg, #495057, #212529);
+}
 
 /* Main container */
 .container {
@@ -85,22 +89,32 @@ h2 {
   transform: rotateX(4deg) rotateY(-4deg) scale(1.05);
 }
 
-.post-title {
+.post-username {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
 }
 
 .post-content {
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 15px;
-}
+  position: relative;
+  max-height: 4.5em; 
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: normal;
 
-.post-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  &::after {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: pointer;
+    padding-left: 5px;
+  }
+
+  &:hover {
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+  }
 }
 
 .post-btn {
@@ -153,7 +167,7 @@ h2 {
     padding: 15px;
   }
 
-  .post-title {
+  .post-username {
     font-size: 16px;
   }
 }

@@ -26,8 +26,9 @@ async function fetchPosts() {
       postCard.className = "post-card";
 
       postCard.innerHTML = `
-        <div class="post-title">${escapeHTML(post.Title)}</div>
+        <div class="post-username">${escapeHTML(post.UserName)}</div>
         <div class="meta">
+          Title: ${escapeHTML(post.Title)} |
           Category: ${escapeHTML(post.Category)} | 
           Posted on: ${new Date(post.CreatedAt).toLocaleString()}
         </div>

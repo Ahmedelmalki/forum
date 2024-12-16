@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS  users (
 
 CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     category TEXT NOT NULL,

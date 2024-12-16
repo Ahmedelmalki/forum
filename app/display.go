@@ -10,6 +10,7 @@ import (
 
 type Post struct {
 	ID        int
+	UserName string
 	Title     string
 	Content   string
 	Category  string
@@ -17,7 +18,7 @@ type Post struct {
 }
 
 func FetchPosts(db *sql.DB) ([]Post, error) {
-	query := "SELECT id, title, content, category, created_at FROM posts ORDER BY created_at DESC"
+	query := "SELECT id, username, title, content, category, created_at FROM posts ORDER BY created_at DESC"
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
@@ -27,9 +28,9 @@ func FetchPosts(db *sql.DB) ([]Post, error) {
 	var posts []Post
 	for rows.Next() {
 		var post Post
-		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.Category, &post.CreatedAt)
+		err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.Category, &post.CreatedAt)
 		if err != nil {
-			fmt.Printf("error scanning %v \n", err)
+			fmt.Printf("error scanning:\n %v \n", err)
 			continue
 		}
 		posts = append(posts, post)

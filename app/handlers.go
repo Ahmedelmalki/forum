@@ -143,7 +143,8 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		}
 		var idForUsername int
 		var userName string
-		query1 := `SELECT id FROM sessions WHERE session= ?;`
+		// stupid misstake : i was slecting id instad of user_id which is linked to the users table
+		query1 := `SELECT user_id FROM sessions WHERE session= ?;`
 		err = db.QueryRow(query1, cookie.Value).Scan(&idForUsername)
 		fmt.Println(idForUsername)
 		if err != nil {
@@ -161,14 +162,13 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		title := r.FormValue("title")
 		category := r.FormValue("category")
 		content := r.FormValue("content")
-		fmt.Println(title, category, content)
 		if title == "" || category == "" || content == "" {
 			http.Error(w, "All fields are required", http.StatusBadRequest)
 			return
 		}
 
-		query := "INSERT INTO posts (title, category, content) VALUES (?, ?, ?)"
-		_, err = db.Exec(query, title, category, content)
+		query := "INSERT INTO posts (username, title, category, content) VALUES (?, ?, ?, ?)"
+		_, err = db.Exec(query, userName, title, category, content)
 		if err != nil {
 			log.Printf("Error adding post: %v", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
