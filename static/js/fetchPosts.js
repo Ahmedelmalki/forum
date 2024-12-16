@@ -34,12 +34,14 @@ async function fetchPosts() {
       <div class="post-content">${escapeHTML(post.Content)}</div>
       <div class="post-actions">
         <button class="post-btn">Like</button>
+        <button class="comment-btn" onclick="loadComments(${post.ID})">
+          View Comments
+        </button>
         <div class="post-likes">${post.Likes || 0} likes</div>
       </div>
       <div class="comment-section">
-        <button onclick="loadComments(${post.ID})">Load Comments</button>
         <textarea id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
-        <button onclick="postComment(${post.ID}, 1)">Comment</button>
+        <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
         <div id="comments-list-${post.ID}" class="comments-list"></div>
       </div>
     `;
@@ -68,6 +70,8 @@ function escapeHTML(str) {
   );
 }
 
+/*************Start Comment sections functions*****************/
+  // Function to post a comment
 async function postComment(postId, userId) {
   const commentInput = document.getElementById(`comment-input-${postId}`);
   const commentContent = commentInput.value;
@@ -94,6 +98,7 @@ async function postComment(postId, userId) {
   }
 }
 
+// Function to load comments
 async function loadComments(postId) {
   try {
     const response = await fetch(`/comments?post_id=${postId}`);
@@ -114,5 +119,7 @@ async function loadComments(postId) {
     console.error('RError of loading comments:', error);
   }
 }
+/*************End Comment sections functions*****************/
+
 // Load posts when the page loads
 window.onload = fetchPosts;

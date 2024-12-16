@@ -64,15 +64,14 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-// CommentHandler handles comments
-
-
+/*************Start Comment handler functions*****************/
+// Function to create a new comment
 func CreateComment(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         
 		userID, authenticated := ValidateCookie(db, w,r)
         if authenticated != nil {
-            http.Error(w, "Unauthorized: User must be logged in to comment", http.StatusUnauthorized)
+            http.Error(w, authenticated.Error(), http.StatusUnauthorized)
             return
         }
 
@@ -108,6 +107,7 @@ func CreateComment(db *sql.DB) http.HandlerFunc {
     }
 }
 
+// Function to get comments
 func GetComments(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         postID := r.URL.Query().Get("post_id")
@@ -133,3 +133,4 @@ func GetComments(db *sql.DB) http.HandlerFunc {
         json.NewEncoder(w).Encode(comments)
     }
 }
+/*************End Comment handler functions*****************/
