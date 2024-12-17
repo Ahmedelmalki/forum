@@ -195,11 +195,11 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 		sessionID := cookie.Value
 		fmt.Printf("Method: %s Cookie: %+v\n", r.Method, cookie)
 		query := `DELETE FROM sessions WHERE session = ?`
-		if err != nil {
-			log.Printf("Error invalidating session: %v", err)
-			http.Error(w, "Failed to log out", http.StatusInternalServerError)
-			return
-		}
+		// if err != nil {
+		// 	log.Printf("Error invalidating session: %v", err)
+		// 	http.Error(w, "Failed to log out", http.StatusInternalServerError)
+		// 	return
+		// }
 
 		res, err := db.Exec(query, sessionID)
 		if err != nil {

@@ -40,7 +40,7 @@ async function fetchPosts() {
         <div class="post-likes">${post.Likes || 0} likes</div>
       </div>
       <div class="comment-section">
-        <textarea id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
+        <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
         <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
         <div id="comments-list-${post.ID}" class="comments-list"></div>
       </div>
@@ -111,7 +111,7 @@ async function loadComments(postId) {
       const commentElement = document.createElement('div');
       commentElement.innerHTML = `
       <div class="comment">
-        <small>Posted by ${comment.username}, at: ${new Date(comment.created_at).toLocaleString()}</small>
+        <small>Posted by <b>${comment.username}</b>, at: ${new Date(comment.created_at).toLocaleString()}</small>
         <p>${escapeHTML(comment.content)}</p>
         <button class="like-btn" onclick="likeComment(${comment.id})">Like</button>
         <button class="delete-btn" onclick="deleteComment(${comment.id})">Unlike</button>
