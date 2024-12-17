@@ -71,7 +71,7 @@ function escapeHTML(str) {
 }
 
 /*************Start Comment sections functions*****************/
-  // Function to post a comment
+// Function to post a comment
 async function postComment(postId, userId) {
   const commentInput = document.getElementById(`comment-input-${postId}`);
   const commentContent = commentInput.value;
@@ -110,7 +110,7 @@ async function loadComments(postId) {
     comments.forEach(comment => {
       const commentElement = document.createElement('div');
       commentElement.innerHTML = `
-        <p>${comment.content}</p>
+        <p>${escapeHTML(comment.content)}</p>
         <small>Posté le ${new Date(comment.created_at).toLocaleString()}</small>
       `;
       commentsList.appendChild(commentElement);
