@@ -107,11 +107,15 @@ async function loadComments(postId) {
     const commentsList = document.getElementById(`comments-list-${postId}`);
     commentsList.innerHTML = ''; 
 
-    comments.forEach(comment => {
+    comments.reverse().forEach(comment => {
       const commentElement = document.createElement('div');
       commentElement.innerHTML = `
+      <div class="comment">
+        <small>Posted by ${comment.username}, at: ${new Date(comment.created_at).toLocaleString()}</small>
         <p>${escapeHTML(comment.content)}</p>
-        <small>Posté le ${new Date(comment.created_at).toLocaleString()}</small>
+        <button class="like-btn" onclick="likeComment(${comment.id})">Like</button>
+        <button class="delete-btn" onclick="deleteComment(${comment.id})">Unlike</button>
+      </div>
       `;
       commentsList.appendChild(commentElement);
     });

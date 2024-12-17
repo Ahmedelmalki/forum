@@ -20,6 +20,7 @@ type Post struct {
 type Comment struct {
     ID        int       `json:"id"`
     PostID    int       `json:"post_id"`
+    UserName  string    `json:"username"`
     UserID    int       `json:"user_id"`
     Content   string    `json:"content"`
     CreatedAt time.Time `json:"created_at"`
@@ -111,7 +112,11 @@ func CreateComment(db *sql.DB) http.HandlerFunc {
 func GetComments(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         postID := r.URL.Query().Get("post_id")
-        rows, err := db.Query("SELECT id, user_id, content, created_at FROM comments WHERE post_id = ?", postID)
+        rows, err := db.Query(`SELECT com.id, com.user_id, us.username, com.content, com.created_at FROM comments com
+            JOIN users us ON com.user_id = us.id
+            WHERE com.post_id = ?
+            ORDER BY com.created_at ASC
+        `, postID)
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
@@ -121,7 +126,7 @@ func GetComments(db *sql.DB) http.HandlerFunc {
         var comments []Comment
         for rows.Next() {
             var comment Comment
-            err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt)
+            err := rows.Scan(&comment.ID, &comment.UserID,&comment.UserName, &comment.Content, &comment.CreatedAt)
             if err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
