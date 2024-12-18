@@ -9,6 +9,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+// somthing
 func InsretCookie(db *sql.DB, user_id int, cookie string) error {
 	query := `INSERT INTO sessions (user_id, session) VALUES (?, ?)`
 	_, err := db.Exec(query, user_id, cookie)
