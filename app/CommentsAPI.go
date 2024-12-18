@@ -7,14 +7,7 @@ import (
 	"time"
 )
 
-type Comment struct {
-	ID        int       `json:"id"`
-	PostID    int       `json:"post_id"`
-	UserName  string    `json:"username"`
-	UserID    int       `json:"user_id"`
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"created_at"`
-}
+
 
 func CreateComment(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -85,5 +78,6 @@ func GetComments(db *sql.DB) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(comments)
+		// fmt.Print("\n", json.NewEncoder(os.Stdout).Encode(comments))
 	}
 }

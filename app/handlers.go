@@ -10,12 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterCredenials struct {
-	UserName string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func RegisterHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -62,14 +56,9 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		fmt.Printf("%s registered successfully\n", email)
-		// http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
-type LoginCredentials struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
 
 func LoginHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -142,7 +131,6 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		var idForUsername int
-		var userName string
 		// stupid misstake : i was slecting id instad of user_id which is linked to the users table
 		query1 := `SELECT user_id FROM sessions WHERE session= ?;`
 		err = db.QueryRow(query1, cookie.Value).Scan(&idForUsername)
@@ -151,6 +139,7 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 			fmt.Println(err)
 			return
 		}
+		var userName string
 		query2 := `SELECT username FROM users WHERE id= ?`
 		err = db.QueryRow(query2, idForUsername).Scan(&userName)
 		if err != nil {
@@ -199,12 +188,6 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 		sessionID := cookie.Value
 		fmt.Printf("Method: %s Cookie: %+v\n", r.Method, cookie)
 		query := `DELETE FROM sessions WHERE session = ?`
-		// if err != nil {
-		// 	log.Printf("Error invalidating session: %v", err)
-		// 	http.Error(w, "Failed to log out", http.StatusInternalServerError)
-		// 	return
-		// }
-
 		res, err := db.Exec(query, sessionID)
 		if err != nil {
 			fmt.Println("error executing the query")

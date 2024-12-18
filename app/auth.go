@@ -3,13 +3,13 @@ package forum
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gofrs/uuid"
 )
 
-// somthing
 func InsretCookie(db *sql.DB, user_id int, cookie string) error {
 	query := `INSERT INTO sessions (user_id, session) VALUES (?, ?)`
 	_, err := db.Exec(query, user_id, cookie)
@@ -50,4 +50,21 @@ func ValidateCookie(db *sql.DB, w http.ResponseWriter, r *http.Request) (int, er
 		return 0, errors.New("error")
 	}
 	return user_id, nil
+}
+
+func isLoged(db *sql.DB, r *http.Request) int {
+	var user_id int
+	cookie, err := r.Cookie("forum_session")
+	if err != nil {
+		user_id = 0
+	} else {
+		sessionID := cookie.Value
+		query1 := `SELECT user_id FROM sessions WHERE session = ?`
+		err = db.QueryRow(query1, sessionID).Scan(&user_id)
+		if err != nil {
+			user_id = 0
+		}
+	}
+	fmt.Println("####", user_id)
+	return user_id
 }

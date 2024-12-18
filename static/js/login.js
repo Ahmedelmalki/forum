@@ -4,7 +4,7 @@ botton.addEventListener("click", async () => {
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
   try {
-    const response = await fetch("http://localhost:8090/login/submit", {
+    const response = await fetch("/login/submit", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

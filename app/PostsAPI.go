@@ -5,17 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 )
-
-type Post struct {
-	ID        int
-	UserName  string
-	Title     string
-	Content   string
-	Category  string
-	CreatedAt time.Time
-}
 
 func FetchPosts(db *sql.DB) ([]Post, error) {
 	query := "SELECT id, username, title, content, category, created_at FROM posts ORDER BY created_at DESC"
@@ -44,18 +34,7 @@ func FetchPosts(db *sql.DB) ([]Post, error) {
 // APIHandler serves the posts as JSON
 func APIHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var user_id int
-		cookie, err := r.Cookie("forum_session")
-		if err != nil {
-			user_id = 0
-		} else {
-			sessionID := cookie.Value
-			query1 := `SELECT user_id FROM sessions WHERE session = ?`
-			err = db.QueryRow(query1, sessionID).Scan(&user_id)
-			if err != nil {
-				user_id = 0
-			}
-		}
+		user_id := isLoged(db, r)
 		posts, err := FetchPosts(db)
 		if err != nil {
 			http.Error(w, "Error fetching posts", http.StatusInternalServerError)
