@@ -1,236 +1,289 @@
-/* General styling */
-body {
-  font-family: "Arial", sans-serif;
+/* General reset for margin, padding, and box-sizing */
+* {
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #1e1e2f, #3a3a52);
-  color: white;
-  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Body and page layout */
+body {
+  background-image: url("img/blob.gif");
+  background-attachment: fixed;
+
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+b {
+  font-weight: bolder;
+  color: black;
+}
+small {
+  color: rebeccapurple;
+}
+.post-username {
+  font-weight: bolder;
+  background-color: white;
+  opacity: 0.9;
+}
 
-/* Header Styling */
+.meta {
+  /* background: linen; */
+  display: inline list-item;
+  color: rebeccapurple;
+}
+.meta{
+  background-color: white;
+  opacity: 0.9;
+}
+
+.post-content {
+  padding: inherit;
+  display:flex;
+  background-color: #fff;
+  opacity: 0.9;
+  font-weight: 1000;
+  overflow: auto;
+}
+/* Header styling */
 header {
-  width: 75%;
-  padding: 20px;
-  display: inherit;
-  justify-content: space-evenly;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+  color: #000000;
   align-items: center;
-  background: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6);
+  flex-direction: ruby;
+  margin-bottom: 20px;
+  border: 20px outset #fff;
 }
 
 header h1 {
   font-size: 24px;
-  margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  margin-right: 20px;
+  flex-grow: 1; /* Ensures the header title is at the left */
+  text-align: left;
 }
 
-header a {
-  margin-left: 15px;
+/* Buttons styling */
+button, a {
   padding: 10px 15px;
+  background-color: #000000;
+  color: #fff;
   text-decoration: none;
-  color: white;
-  background: linear-gradient(45deg, #007bff, #0056b3);
-  border-radius: 5px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
 }
 
-header a:hover {
-  transform: translateY(-3px);
-  background: linear-gradient(45deg, #0056b3, #007bff);
+button:hover, a:hover {
+  background-color: #555;
 }
 
-.login-btn {
-  background: linear-gradient(45deg, #6c757d, #343a40);
-}
-.login-btn:hover {
-  background: linear-gradient(45deg, #495057, #212529);
+/* Hide unlogged-in buttons */
+.unloged {
+  display: none;
 }
 
-/* Main container */
+/* Hide logged-in buttons */
+.loged {
+  display: inline-block;
+}
+
+/* Post container and individual post styling */
 .container {
-  width: 90%;
-  max-width: 1200px;
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 h2 {
   margin-bottom: 20px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-}
+  display: flex;
+  flex-direction: column;
+  text-emphasis-style: double-circle;
+  align-items: center;}
 
-/* Posts section */
 #posts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  width: 75%;
-}
-
-/* Post cards */
-.post-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.1);
-  perspective: 1000px;
-  transform: rotateX(0deg) rotateY(0deg) scale(1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.post-card:hover {
-  transform: rotateX(4deg) rotateY(-4deg) scale(1.05);
-}
-
-.post-username {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.post-content {
+  width: 70%;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px dashed #ddd;
+  border-radius: 20px;
+  /* background-color: #fafafa; */
+  min-height: 150px;
+  box-shadow: 0px 0px 4px 4px rgba(255, 255, 255, 0.1), 0px 0px 6px 6px rgba(255, 255, 0, 0.1), 0px 0px 9px 9px rgba(255, 0, 255, 0.1), 0px 0px 12px 12px rgba(0, 153, 255, 0.1), 0px 0px 18px 18px rgba(255, 255, 255, 0.1), inset 0px 0px 100px 60px rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   position: relative;
-  max-height: 4.5em; 
-  overflow: hidden;
-  word-wrap: break-word;
-  white-space: normal;
+  margin: 0px 0px 100px 0px;
+  float: left;
 
-  &::after {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    cursor: pointer;
-    padding-left: 5px;
-  }
-
-  &:hover {
-    max-height: none;
-    overflow: visible;
-    white-space: normal;
-  }
 }
 
-.post-btn {
-  padding: 8px 12px;
-  font-size: 14px;
-  background: linear-gradient(45deg, #28a745, #218838);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+.post-card {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 20px outset #fff;
+  background-image: url("img/blob.gif");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fafafa;
+  display: block;
 }
-
-.post-btn:hover {
-  transform: scale(1.05);
-  background: linear-gradient(45deg, #218838, #28a745);
+/* .comment-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fafafa;
+  min-height: 150px;
+} */
+ /* Style the comment section */
+ .comment {
+  border: 2px inset #fff;
+  padding: 1rem;
+  margin: 15px;
 }
-
-.post-likes {
-  font-size: 12px;
-  color: #ffc107;
-}
-
-/**************Comments Section***********************/
 .comment-section {
   margin-top: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.1);
-  perspective: 1000px;
-  transform: rotateX(0deg) rotateY(0deg) scale(1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.comment-btn {
-  padding: 4px 3px;
-  margin-top: 3px;
-  font-size: 14px;
-  float: right;
-  background: linear-gradient(45deg, #007bff, #0056b3);
-  border: none;
-  border-radius: 8px;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
-  transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
-}
-
-.comment-btn:hover {
-  transform: scale(1.05);
-  background: linear-gradient(45deg, #007bff, #0056b3);
-}
-
-.send-comment-btn {
-  /* padding: 8px 12px; */
-  font-size: 14px;
-  background: #fff;
-  border: none;
-  border-radius: 4px;
-margin-left: 3px;
-  color: #007bff;
-  cursor: pointer;
-}
-
-.comment-input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  transition: border-color 0.3s ease;  
-}
-
-.comment{
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
   padding: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(255, 255, 255, 0.1);
-  perspective: 1000px;
-  transform: rotateX(0deg) rotateY(0deg) scale(1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-/**************End of Comments Section***********************/
-
-/* Log Out Button */
-.log-out-btn {
-  background: linear-gradient(45deg, #dc3545, #c82333);
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  display: contents;
+}
+
+/* Style the comment textarea to resemble YouTube comment input */
+.comment-input {
+  width: 100%;
+  height: 100px; /* Fixed height for the textarea */
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: none; /* Disable resizing */
+  background-color: #f9f9f9;
+  color: #333;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Send button style */
+.send-comment-btn {
+  margin-top: 10px;
+  padding: 8px 15px;
+  background-color: #000000;
+  color: #fff;
   border: none;
-  margin-top: 20px;
-  padding: 10px 15px;
   cursor: pointer;
-  transition: transform 0.3s, background 0.3s;
+  font-size: 14px;
+}
+.post-actions {
+  background-color: white;
+  opacity: 0.9;
+}
+.send-comment-btn:hover {
+  background-color: #555;
+}
+
+/* Comments list container style */
+.comments-list {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  border: 5px outset #fff;
+  max-height: 300px;
+  overflow-y: auto;
+  opacity: 0.9;
+}
+
+
+.post {
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Log out and create new post buttons when logged in */
+.newPost-btn, .log-out-btn {
+  display: inline-block;
+}
+
+.newPost-btn {
+  background-color: #000000; /* Green for create post */
+}
+
+.newPost-btn:hover {
+  background-color: #000000;
+}
+
+.log-out-btn {
+  background-color: rgb(0, 0, 0);
 }
 
 .log-out-btn:hover {
-  transform: scale(1.05);
-  background: linear-gradient(45deg, #c82333, #dc3545);
+  background-color: rgb(0, 0, 0);
 }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-  header a {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
+/* Adjustments for the header when logged in */
+header .newPost-btn {
+  display: inline-block;
+  margin-right: 20px;
+}
 
-  .post-card {
-    padding: 15px;
-  }
+header .log-out-btn {
+  display: inline-block;
+}
+.register-btn, .login-btn {
+  display: inline-block;
+}
 
-  .post-username {
-    font-size: 16px;
-  }
+.register-btn {
+  background-color: #000000; /* Green for create post */
+}
+
+.register-btn:hover {
+  background-color: #000000;
+}
+
+.login-btn {
+  background-color: rgb(0, 0, 0);
+}
+
+.login-btn:hover {
+  background-color: rgb(0, 0, 0);
+}
+
+/* Adjustments for the header when logged in */
+header .register-btn {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+header .login-btn {
+  display: inline-block;
+}
+
+/* Login and Register buttons when logged out */
+header .login-btn,
+header .register-btn {
+  display: inline-block;
+  margin-right: 20px;
+
+}
+
+/* Ensure proper spacing between header items */
+header > a, header > form {
+  margin-left: 10px;
 }

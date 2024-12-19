@@ -5,23 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forum - Home</title>
     <link rel="stylesheet" href="/static/style/home.css" />
+    <link rel="stylesheet" href="/static/js/comments.js" />
   </head>
   <body>
     <header>
-      <a href="/login" class="login-btn">login</a>
-      <a href="/register" class="register-btn">register</a>
       <h1>Welcome to the Forum</h1>
-      <a href="/newPost" class="newPost-btn">create new a post</a>
+      <a href="/login"  class="login-btn loged">login</a>
+      <a href="/register" class="register-btn loged">register</a>
+      <a href="/newPost" class="newPost-btn unloged">create new a post</a>
+      <form action="/logout" method="POST">
+        <button type="submit" class="log-out-btn unloged">Log Out</button>
+      </form>
     </header>
     <div class="container">
       <h2>Posts</h2>
       </div>
       <div id="posts"></div>
-      <form action="/logout" method="POST">
-        <button type="submit" class="log-out-btn">Log Out</button>
-      </form>
     </div>
 
     <script src="/static/js/fetchPosts.js"></script>
+    <script src="/static/js/comments.js"></script>
+    
   </body>
 </html>
