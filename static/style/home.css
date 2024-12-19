@@ -106,6 +106,7 @@ h2 {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  text-emphasis-style: double-circle;
   align-items: center;}
 
 #posts {
