@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS comments (
 CREATE TABLE IF NOT EXISTS sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     session TEXT NOT NULL,
+    exp_date DATETIME,
     user_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

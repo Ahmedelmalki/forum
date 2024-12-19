@@ -3,9 +3,9 @@ function validateCredentials(email, password) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   /* At least one letter,
   At least one digit, At least one special character
-  Minimum of 8 characters */
+  Minimum of 8 characters {8,}$ */
   const passwordRegex =
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
 
   const isEmailValid = emailRegex.test(email);
   const isPasswordStrong = passwordRegex.test(password);
@@ -21,9 +21,7 @@ function validateCredentials(email, password) {
     );
     return false;
   }
-
-  alert("Credentials are valid.");
-  return true;
+  return true
 }
 
 const form = document.querySelector(".container");
@@ -34,7 +32,7 @@ botton.addEventListener("click", async () => {
   const passwordInput = document.getElementById("password");
 
   if (!validateCredentials(emailInput.value, passwordInput.value)) {
-    console.log("here");
+    console.log("here !!!!!!!!!!!");
     return; // Stop if validation fails
   }
   try {

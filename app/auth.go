@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gofrs/uuid"
 )
 
-func InsretCookie(db *sql.DB, user_id int, cookie string) error {
-	query := `INSERT INTO sessions (user_id, session) VALUES (?, ?)`
-	_, err := db.Exec(query, user_id, cookie)
+func InsretCookie(db *sql.DB, user_id int, cookie string, exp_date time.Time) error {
+	query := `INSERT INTO sessions (user_id, session, exp_date) VALUES (?, ?, ?)`
+	_, err := db.Exec(query, user_id, cookie, exp_date)
 	if err != nil {
 		return err
 	}
@@ -27,9 +28,11 @@ func CookieMaker(w http.ResponseWriter) string {
 	}
 
 	cookie := &http.Cookie{
-		Name:  "forum_session",
-		Value: u.String(),
-		Path:  "/",
+		Name:     "forum_session",
+		Value:    u.String(),
+		Path:     "/",
+		HttpOnly: true,
+		Expires:  time.Now().Add(time.Hour * 24),
 	}
 	http.SetCookie(w, cookie)
 	return u.String()
@@ -41,7 +44,7 @@ func ValidateCookie(db *sql.DB, w http.ResponseWriter, r *http.Request) (int, er
 		return 0, err
 	}
 	sessionID := cookie.Value
-	query1 := `SELECT user_id FROM sessions WHERE session = ?`
+	query1 := `SELECT user_id FROM sessions WHERE session = ? AND exp_date > datetime('now') `
 	var user_id int
 	err = db.QueryRow(query1, sessionID).Scan(&user_id)
 	if err != nil {

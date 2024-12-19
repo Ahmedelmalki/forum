@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -50,7 +51,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		cookie := CookieMaker(w)
-		err = InsretCookie(db, int(user_id), cookie)
+		err = InsretCookie(db, int(user_id), cookie, time.Now().Add(time.Hour*24))
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -58,7 +59,6 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 		fmt.Printf("%s registered successfully\n", email)
 	}
 }
-
 
 func LoginHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -103,7 +103,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		cookie := CookieMaker(w)
-		err = InsretCookie(db, user_id, cookie)
+		err = InsretCookie(db, user_id, cookie, time.Now().Add(time.Hour*24))
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -151,11 +151,11 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		title := r.FormValue("title")
 		category := r.FormValue("category")
 		content := r.FormValue("content")
-		if title == "" || category == "" || content == ""  {
+		if title == "" || category == "" || content == "" {
 			http.Error(w, "All fields are required", http.StatusBadRequest)
 			return
 		}
-		if len(title) > 50 || len(content) > 1000  {
+		if len(title) > 50 || len(content) > 1000 {
 			http.Error(w, "don't miss with the html plz", http.StatusBadRequest)
 			return
 		}
