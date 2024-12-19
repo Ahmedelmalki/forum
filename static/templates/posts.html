@@ -9,18 +9,18 @@
   </head>
   <body>
     <header>
+      <h1>Welcome to the Forum</h1>
       <a href="/login"  class="login-btn loged">login</a>
       <a href="/register" class="register-btn loged">register</a>
-      <h1>Welcome to the Forum</h1>
       <a href="/newPost" class="newPost-btn unloged">create new a post</a>
+      <form action="/logout" method="POST">
+        <button type="submit" class="log-out-btn unloged">Log Out</button>
+      </form>
     </header>
     <div class="container">
       <h2>Posts</h2>
       </div>
       <div id="posts"></div>
-      <form action="/logout" method="POST">
-        <button type="submit" class="log-out-btn unloged">Log Out</button>
-      </form>
     </div>
 
     <script src="/static/js/fetchPosts.js"></script>
