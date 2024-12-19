@@ -72,7 +72,7 @@ header h1 {
 /* Buttons styling */
 button, a {
   padding: 10px 15px;
-  background-color: #333;
+  background-color: #000000;
   color: #fff;
   text-decoration: none;
   border: none;
@@ -134,7 +134,7 @@ h2 {
   background-repeat: no-repeat;
   background-position: center;
   background-color: #fafafa;
-  display: grid;
+  display: block;
 }
 /* .comment-section {
   margin-top: 1rem;
@@ -179,7 +179,7 @@ h2 {
 .send-comment-btn {
   margin-top: 10px;
   padding: 8px 15px;
-  background-color: #333;
+  background-color: #000000;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -190,7 +190,7 @@ h2 {
   opacity: 0.9;
 }
 .send-comment-btn:hover {
-  background-color: #000000;
+  background-color: #555;
 }
 
 /* Comments list container style */
@@ -199,7 +199,7 @@ h2 {
   padding: 10px;
   background-color: #f9f9f9;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 5px outset #fff;
   max-height: 300px;
   overflow-y: auto;
   opacity: 0.9;
