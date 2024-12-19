@@ -47,6 +47,7 @@ small {
   background-color: #fff;
   opacity: 0.9;
   font-weight: 1000;
+  overflow: auto;
 }
 /* Header styling */
 header {
