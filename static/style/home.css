@@ -1,22 +1,19 @@
 @import url('https://fonts.cdnfonts.com/css/jetbrains-mono-2');
 
-
 /* General reset for margin, padding, and box-sizing */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 /* Body and page layout */
 body {
-  
+
   background-image: url("https://wallpaperaccess.com/full/8351171.gif");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-
   font-family: 'JetBrains Mono NL', sans-serif;
   background-color: #f4f4f4;
   color: #333;
@@ -40,39 +37,20 @@ small {
   text-align: right;
   padding-right: 5px;
 }
-
-/* font-family: 'JetBrains Mono', sans-serif;letter-spacing: 0;
-  /* font-size: 50px; 
-  font-weight: bolder;
-  background-color: white;
-  opacity: 0.9;
-  border: 1px solid;
-  padding: 5px;
-  text-align: center; */
 .meta {
-  background: linen;
-  /* display: inline list-item; */
+  background-color: white;
   color: rebeccapurple;
   text-align: center;
-  /* display: none; */
-}
-.meta{
-  background-color: white;
   opacity: 0.9;
 }
 .hidden {
   display: none;
 }
-
 .details-toggle {
   text-align: right;
   cursor: pointer;
   font-weight: lighter;
-  /* margin-bottom: 5px; */
 }
-
-
-
 .post-content {
   padding: inherit;
   display:flex;
@@ -87,10 +65,8 @@ header {
   display: flex;
   justify-content: flex-end;
   background-color: #f4f4f4;
-  border-bottom: 1px solid #ddd;
   color: #000000;
   align-items: center;
-  flex-direction: ruby;
   margin-bottom: 20px;
   border: 20px outset #fff;
 }
@@ -148,7 +124,6 @@ h2 {
   padding: 1rem;
   border: 1px dashed #ddd;
   border-radius: 20px;
-  /* background-color: #fafafa; */
   min-height: 150px;
   box-shadow: 0px 0px 4px 4px rgba(255, 255, 255, 0.1), 0px 0px 6px 6px rgba(255, 255, 0, 0.1), 0px 0px 9px 9px rgba(255, 0, 255, 0.1), 0px 0px 12px 12px rgba(0, 153, 255, 0.1), 0px 0px 18px 18px rgba(255, 255, 255, 0.1), inset 0px 0px 100px 60px rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.4);
@@ -177,43 +152,6 @@ h2 {
   padding: 5px;
   text-align: center;
 }
-/* post show more or less settings
-<div class="container">
-<input id="ch" type="checkbox">
-<label for="ch"></label>
-<div class="text"></div>
-</div>
-.text {
-  height: 100px;
-  overflow: hidden;
-}
-.container {
-  position: relative;
-}
-label {
-  position: absolute;
-  top: 100%;
-}
-input {
-  display: none;
-}
-label:after {
-  content: "Show More";
-}
-input:checked + label:after {
-  content: "Show Less";
-}
-input:checked ~ div {
-  height: 100%;
-} */
-/* .comment-section {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fafafa;
-  min-height: 150px;
-} */
  /* Style the comment section */
  .comment {
   border: 2px inset #fff;
@@ -330,33 +268,26 @@ header .log-out-btn {
 .register-btn, .login-btn {
   display: inline-block;
 }
-
 .register-btn {
   background-color: #000000; /* Green for create post */
 }
-
 .register-btn:hover {
   background-color: #000000;
 }
-
 .login-btn {
   background-color: rgb(0, 0, 0);
 }
-
 .login-btn:hover {
   background-color: rgb(0, 0, 0);
 }
-
 /* Adjustments for the header when logged in */
 header .register-btn {
   display: inline-block;
   margin-right: 20px;
 }
-
 header .login-btn {
   display: inline-block;
 }
-
 /* Login and Register buttons when logged out */
 header .login-btn,
 header .register-btn {
@@ -364,7 +295,6 @@ header .register-btn {
   margin-right: 20px;
 
 }
-
 /* Ensure proper spacing between header items */
 header > a, header > form {
   margin-left: 10px;
