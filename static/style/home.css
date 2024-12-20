@@ -33,27 +33,45 @@ small {
   color: rebeccapurple;
 }
 .post-username {
-  font-family: 'JetBrains Mono', sans-serif;letter-spacing: 0;
-  /* font-size: 50px; */
+  background-color: black;
+  color: #fff;
+  border: 1px dashed #aa6780;
+  font-size: 14px;
+  text-align: right;
+  padding-right: 5px;
+}
+
+/* font-family: 'JetBrains Mono', sans-serif;letter-spacing: 0;
+  /* font-size: 50px; 
   font-weight: bolder;
   background-color: white;
   opacity: 0.9;
   border: 1px solid;
   padding: 5px;
-  text-align: center;
-}
-
+  text-align: center; */
 .meta {
   background: linen;
-  display: inline list-item;
+  /* display: inline list-item; */
   color: rebeccapurple;
-  text-align: right;
-  display: none;
+  text-align: center;
+  /* display: none; */
 }
 .meta{
   background-color: white;
   opacity: 0.9;
 }
+.hidden {
+  display: none;
+}
+
+.details-toggle {
+  text-align: right;
+  cursor: pointer;
+  font-weight: lighter;
+  /* margin-bottom: 5px; */
+}
+
+
 
 .post-content {
   padding: inherit;
@@ -83,6 +101,7 @@ header h1 {
   flex-grow: 1; /* Ensures the header title is at the left */
   text-align: left;
 }
+
 
 /* Buttons styling */
 button, a {
@@ -149,6 +168,14 @@ h2 {
   background-position: center;
   background-color: #fafafa;
   display: block;
+}
+.title {
+  font-weight: bolder;
+  background-color: white;
+  opacity: 0.9;
+  border: 1px solid;
+  padding: 5px;
+  text-align: center;
 }
 /* post show more or less settings
 <div class="container">
@@ -227,6 +254,7 @@ input:checked ~ div {
   border: none;
   cursor: pointer;
   font-size: 14px;
+  
 }
 .post-actions {
   background-color: white;
@@ -246,6 +274,18 @@ input:checked ~ div {
   max-height: 300px;
   overflow-y: auto;
   opacity: 0.9;
+}
+.hidden {
+  display: none;
+}
+
+p {
+  padding: 1px;
+  background-color: #fff;
+  opacity: 0.8;
+  font-weight: initial;
+  overflow: auto;
+  text-align: center;
 }
 
 
