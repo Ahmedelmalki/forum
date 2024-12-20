@@ -1,40 +1,49 @@
-// helper func
 function validateCredentials(email, password) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  /* At least one letter,
-  At least one digit, At least one special character
-  Minimum of 8 characters {8,}$ */
   const passwordRegex =
-    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const isEmailValid = emailRegex.test(email);
   const isPasswordStrong = passwordRegex.test(password);
 
-  if (!isEmailValid) {
-    alert("Invalid email format.");
-    return false;
-  }
-
-  if (!isPasswordStrong) {
-    alert(
-      "Password must be at least 8 characters long, include at least one letter, one number, and one special character."
+  const errors = [];
+  if (!isEmailValid) errors.push("Invalid email format");
+  if (!isPasswordStrong)
+    errors.push(
+      "Password must be at least 8 characters long, include at least one letter, one number, and one special character"
     );
-    return false;
-  }
-  return true
+
+  return {
+    isValid: isEmailValid && isPasswordStrong,
+    errors: errors,
+  };
 }
 
+const button = document.querySelector(".submit");
+button.addEventListener("click", async () => {
+  const validation = validateCredentials(emailInput.value, passwordInput.value);
+
+  if (!validation.isValid) {
+    // Display errors in the UI instead of using alerts
+    const errorDiv = document.createElement("div");
+    errorDiv.className = "error-messages";
+    validation.errors.forEach((error) => {
+      const p = document.createElement("p");
+      p.textContent = error;
+      errorDiv.appendChild(p);
+    });
+    form.appendChild(errorDiv);
+    return;
+  }
+
+  // proceed with form submission...
+});
+
 const form = document.querySelector(".container");
-const botton = document.querySelector(".submit");
-botton.addEventListener("click", async () => {
+button.addEventListener("click", async () => {
   const usernameInput = document.getElementById("username");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
-
-  if (!validateCredentials(emailInput.value, passwordInput.value)) {
-    console.log("here !!!!!!!!!!!");
-    return; // Stop if validation fails
-  }
   try {
     const response = await fetch("/register/submit", {
       method: "POST",
