@@ -1,28 +1,24 @@
-// helper func
 function validateCredentials(email, password) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  /* At least one letter,
-  At least one digit, At least one special character
-  Minimum of 8 characters */
   const passwordRegex =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const isEmailValid = emailRegex.test(email);
   const isPasswordStrong = passwordRegex.test(password);
 
-  if (!isEmailValid) {
+  if (!isEmailValid && !isPasswordStrong) {
+    alert("Invalid email format and password requirements not met.");
+    return false;
+  } else if (!isEmailValid) {
     alert("Invalid email format.");
     return false;
-  }
-
-  if (!isPasswordStrong) {
+  } else if (!isPasswordStrong) {
     alert(
       "Password must be at least 8 characters long, include at least one letter, one number, and one special character."
     );
     return false;
   }
 
-  alert("Credentials are valid.");
   return true;
 }
 
