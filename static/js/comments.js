@@ -2,6 +2,7 @@
 // Function to post a comment
 async function postComment(postId, userId) {
   const commentInput = document.getElementById(`comment-input-${postId}`);
+  commentInput.textContent= parseInt(commentInput.textContent) + 1
   const commentContent = commentInput.value;
 
   try {
@@ -43,12 +44,8 @@ async function loadComments(postId) {
         comment.created_at
       ).toLocaleString()}</small>
         <p>${escapeHTML(comment.content)}</p>
-        <button class="like-btn" onclick="likeComment(${
-          comment.id
-        })">Like</button>
-        <button class="delete-btn" onclick="deleteComment(${
-          comment.id
-        })">Unlike</button>
+        <button class="like-btn" onclick="likeComment(${comment.id})">Like</button>
+        <button class="delete-btn" onclick="deleteComment(${comment.id})">Unlike</button>
       </div>
       `;
       commentsList.appendChild(commentElement);

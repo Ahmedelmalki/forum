@@ -38,26 +38,27 @@ async function fetchPosts() {
 
       postCard.innerHTML = `
       <div class="post-username">${escapeHTML(post.UserName)}</div>
-<div class="meta">
-  Title: ${escapeHTML(post.Title)} |
-  Category: ${escapeHTML(post.Category)} | 
-  Posted on: ${new Date(post.CreatedAt).toLocaleString()}
-</div>
-<div class="post-content">${escapeHTML(post.Content)}</div>
-<div class="post-actions">
-  <button class="post-btn">Like</button>
-  <button class="comment-btn" onclick="loadComments(${post.ID})">
-    View Comments
-  </button>
-  <div class="post-likes">${post.Likes || 0} likes</div>
-</div>
-<div class="comment-section">
-  <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
-  <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
-  <div id="comments-list-${post.ID}" class="comments-list"></div>
-</div>
+          <div class="meta">
+            Title: ${escapeHTML(post.Title)} |
+            Category: ${escapeHTML(post.Category)} | 
+            Posted on: ${new Date(post.CreatedAt).toLocaleString()}
+          </div>
+          <div class="post-content">${escapeHTML(post.Content)}</div>
+          <div class="post-actions">
+            <button class="post-btn" data-post-id="${post.ID}">Like</button>
+            <button class="post-btn" data-post-id="${post.ID}">Unlike</button>
+            <button class="comment-btn" onclick="loadComments(${post.ID})">
+              View Comments (${post.Comments || 0})
+            </button>
+            <div class="post-likes" id="like-count-${post.ID}">${post.Likes || 0} likes</div>
+          </div>
+          <div class="comment-section">
+            <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
+            <button class="send-comment-btn" onclick="postComment(${post.ID}, ${posts[1] || 0})">Comment</button>
+            <div id="comments-list-${post.ID}" class="comments-list"></div>
+          </div>
     `;
-      postsContainer.appendChild(postCard);
+    postsContainer.appendChild(postCard);
     });
     if (posts[1] === 0) {
       document
