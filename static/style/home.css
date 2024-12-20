@@ -135,6 +135,29 @@ h2 {
   background-color: #fafafa;
   display: grid;
 }
+
+.post-content {
+  position: relative;
+  max-height: 4.5em; 
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: normal;
+
+  &::after {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: pointer;
+    padding-left: 5px;
+  }
+
+  &:hover {
+    max-height: none;
+    overflow: visible;
+    white-space: normal;
+  }
+}
+
 /* .comment-section {
   margin-top: 1rem;
   padding: 1rem;
