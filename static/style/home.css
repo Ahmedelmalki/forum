@@ -1,3 +1,6 @@
+@import url('https://fonts.cdnfonts.com/css/jetbrains-mono-2');
+
+
 /* General reset for margin, padding, and box-sizing */
 * {
   margin: 0;
@@ -7,13 +10,14 @@
 
 /* Body and page layout */
 body {
+  
   background-image: url("https://wallpaperaccess.com/full/8351171.gif");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 
-  font-family: Arial, sans-serif;
+  font-family: 'JetBrains Mono NL', sans-serif;
   background-color: #f4f4f4;
   color: #333;
   padding: 20px;
@@ -29,15 +33,22 @@ small {
   color: rebeccapurple;
 }
 .post-username {
+  font-family: 'JetBrains Mono', sans-serif;letter-spacing: 0;
+  /* font-size: 50px; */
   font-weight: bolder;
   background-color: white;
   opacity: 0.9;
+  border: 1px solid;
+  padding: 5px;
+  text-align: center;
 }
 
 .meta {
-  /* background: linen; */
+  background: linen;
   display: inline list-item;
   color: rebeccapurple;
+  text-align: right;
+  display: none;
 }
 .meta{
   background-color: white;
@@ -114,8 +125,7 @@ h2 {
   align-items: center;}
 
 #posts {
-  width: 70%;
-  margin-top: 1rem;
+  width: 56%;
   padding: 1rem;
   border: 1px dashed #ddd;
   border-radius: 20px;
@@ -132,14 +142,43 @@ h2 {
 .post-card {
   margin-top: 1rem;
   padding: 1rem;
-  border: 20px outset #fff;
-  background-image: url("img/blob.gif");
+  border: 1px solid #000;
+  /* background-image: url("img/blob.gif"); */
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #fafafa;
   display: block;
 }
+/* post show more or less settings
+<div class="container">
+<input id="ch" type="checkbox">
+<label for="ch"></label>
+<div class="text"></div>
+</div>
+.text {
+  height: 100px;
+  overflow: hidden;
+}
+.container {
+  position: relative;
+}
+label {
+  position: absolute;
+  top: 100%;
+}
+input {
+  display: none;
+}
+label:after {
+  content: "Show More";
+}
+input:checked + label:after {
+  content: "Show Less";
+}
+input:checked ~ div {
+  height: 100%;
+} */
 /* .comment-section {
   margin-top: 1rem;
   padding: 1rem;
