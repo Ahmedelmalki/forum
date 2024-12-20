@@ -61,8 +61,8 @@ async function fetchPosts() {
 
   <div class="post-content">${escapeHTML(post.Content)}</div>
   <div class="post-actions">
-    <button class="post-btn">Like</button>
-    <button class="post-btn-unlike">Unlike</button>
+  
+  <button class="post-btn-dislike">Dislike</button>
     <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">
       Show Comments
     </button>
