@@ -268,6 +268,7 @@ header .log-out-btn {
 .register-btn, .login-btn {
   display: inline-block;
 }
+
 .register-btn {
   background-color: #000000; /* Green for create post */
 }
