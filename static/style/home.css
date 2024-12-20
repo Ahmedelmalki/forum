@@ -7,8 +7,11 @@
 
 /* Body and page layout */
 body {
-  background-image: url("img/blob.gif");
+  background-image: url("https://wallpaperaccess.com/full/8351171.gif");
   background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
