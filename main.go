@@ -85,6 +85,9 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/comments/add", forum.Addcomment(db))
+	http.HandleFunc("/comments/get", forum.Getcomment(db))
+
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 

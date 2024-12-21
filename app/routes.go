@@ -6,14 +6,109 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+func Addcomment(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			return
+		}
+
+		userID, err := ValidateCookie(db, w, r)
+		if err != nil {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		//fmt.Println(" commenttst")
+
+		postIDStr := r.FormValue("post_id")
+
+		content := r.FormValue("content")
+
+		postID, err := strconv.Atoi(postIDStr)
+
+		if postIDStr == "" || content == "" {
+			http.Error(w, "Post ID and content are required", http.StatusBadRequest)
+			return
+		}
+
+		query := `INSERT INTO comments (post_id, user_id, content, created_at) VALUES (?, ?, ?, ?)`
+
+		RESULT, err := db.Exec(query, postID, userID, content, time.Now())
+		if err != nil {
+			http.Error(w, "Failed to add comment", http.StatusInternalServerError)
+			return
+		}
+
+		commentId, err := RESULT.LastInsertId()
+		if err != nil {
+			http.Error(w, "Failed to retrieve comment ID", http.StatusInternalServerError)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(Comment{
+			ID:        int(commentId),
+			UserID:    userID,
+			PostID:    postID,
+			Content:   content,
+			CreatedAt: time.Now(),
+		})
+
+	}
+}
 
 type RegisterCredenials struct {
 	UserName string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type Comment struct {
+	ID        int       `json:"id"`
+	UserID    int       `json:"user_id"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	PostID    int       `json:"post_id"`
+}
+
+func Getcomment(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		postID := r.URL.Query().Get("post_id")
+		if postID == "" {
+			http.Error(w, "Post ID is required", http.StatusBadRequest)
+			return
+		}
+
+		query := `SELECT id , user_id, content, created_at FROM comments WHERE post_id = ?;`
+		rows, err := db.Query(query, postID)
+		if err != nil {
+			http.Error(w, "Error retrieving comments", http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
+
+		var ALLcomment []Comment
+
+		for rows.Next() {
+			var comment Comment
+			err := rows.Scan(&comment.ID, &comment.UserID, &comment.Content, &comment.CreatedAt)
+			if err != nil {
+				http.Error(w, "Error scanning comment", http.StatusInternalServerError)
+				return
+			}
+			ALLcomment = append(ALLcomment, comment)
+		}
+
+		//	w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(ALLcomment)
+	}
 }
 
 func RegisterHandler(db *sql.DB) http.HandlerFunc {
