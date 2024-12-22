@@ -1,16 +1,20 @@
+@import url('https://fonts.cdnfonts.com/css/jetbrains-mono-2');
+
 /* General reset for margin, padding, and box-sizing */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 /* Body and page layout */
 body {
-  background-image: url("img/blob.gif");
-  background-attachment: fixed;
 
-  font-family: Arial, sans-serif;
+  background-image: url("img/blue.gif");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  font-family: 'JetBrains Mono NL', sans-serif;
   background-color: #f4f4f4;
   color: #333;
   padding: 20px;
@@ -26,27 +30,34 @@ small {
   color: rebeccapurple;
 }
 .post-username {
-  font-weight: bolder;
-  background-color: white;
-  opacity: 0.9;
+  background-color: black;
+  color: #fff;
+  border: 1px dashed #aa6780;
+  font-size: 14px;
+  text-align: right;
+  padding-right: 5px;
 }
-
 .meta {
-  /* background: linen; */
-  display: inline list-item;
-  color: rebeccapurple;
-}
-.meta{
   background-color: white;
+  color: rebeccapurple;
+  text-align: center;
   opacity: 0.9;
 }
-
+.hidden {
+  display: none;
+}
+.details-toggle {
+  text-align: right;
+  cursor: pointer;
+  font-weight: lighter;
+}
 .post-content {
   padding: inherit;
   display:flex;
   background-color: #fff;
   opacity: 0.9;
   font-weight: 1000;
+  overflow: auto;
 }
 /* Header styling */
 header {
@@ -54,10 +65,8 @@ header {
   display: flex;
   justify-content: flex-end;
   background-color: #f4f4f4;
-  border-bottom: 1px solid #ddd;
   color: #000000;
   align-items: center;
-  flex-direction: ruby;
   margin-bottom: 20px;
   border: 20px outset #fff;
 }
@@ -69,10 +78,11 @@ header h1 {
   text-align: left;
 }
 
+
 /* Buttons styling */
 button, a {
   padding: 10px 15px;
-  background-color: #333;
+  background-color: #000000;
   color: #fff;
   text-decoration: none;
   border: none;
@@ -106,15 +116,14 @@ h2 {
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  text-emphasis-style: double-circle;
   align-items: center;}
 
 #posts {
-  width: 70%;
-  margin-top: 1rem;
+  width: 56%;
   padding: 1rem;
   border: 1px dashed #ddd;
   border-radius: 20px;
-  /* background-color: #fafafa; */
   min-height: 150px;
   box-shadow: 0px 0px 4px 4px rgba(255, 255, 255, 0.1), 0px 0px 6px 6px rgba(255, 255, 0, 0.1), 0px 0px 9px 9px rgba(255, 0, 255, 0.1), 0px 0px 12px 12px rgba(0, 153, 255, 0.1), 0px 0px 18px 18px rgba(255, 255, 255, 0.1), inset 0px 0px 100px 60px rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.4);
@@ -127,37 +136,14 @@ h2 {
 .post-card {
   margin-top: 1rem;
   padding: 1rem;
-  border: 20px outset #fff;
-  background-image: url("img/blob.gif");
+  border: 1px solid #000;
+  /* background-image: url("img/blob.gif"); */
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center;
   background-color: #fafafa;
-  display: grid;
+  display: block;
 }
-
-.post-content {
-  position: relative;
-  max-height: 4.5em; 
-  overflow: hidden;
-  word-wrap: break-word;
-  white-space: normal;
-
-  &::after {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    cursor: pointer;
-    padding-left: 5px;
-  }
-
-  &:hover {
-    max-height: none;
-    overflow: visible;
-    white-space: normal;
-  }
-}
-
 /* .comment-section {
   margin-top: 1rem;
   padding: 1rem;
@@ -201,18 +187,19 @@ h2 {
 .send-comment-btn {
   margin-top: 10px;
   padding: 8px 15px;
-  background-color: #333;
+  background-color: #000000;
   color: #fff;
   border: none;
   cursor: pointer;
   font-size: 14px;
+  
 }
 .post-actions {
   background-color: white;
   opacity: 0.9;
 }
 .send-comment-btn:hover {
-  background-color: #000000;
+  background-color: #555;
 }
 
 /* Comments list container style */
@@ -221,10 +208,22 @@ h2 {
   padding: 10px;
   background-color: #f9f9f9;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 5px outset #fff;
   max-height: 300px;
   overflow-y: auto;
   opacity: 0.9;
+}
+.hidden {
+  display: none;
+}
+
+p {
+  padding: 1px;
+  background-color: #fff;
+  opacity: 0.8;
+  font-weight: initial;
+  overflow: auto;
+  text-align: center;
 }
 
 
@@ -273,29 +272,23 @@ header .log-out-btn {
 .register-btn {
   background-color: #000000; /* Green for create post */
 }
-
 .register-btn:hover {
   background-color: #000000;
 }
-
 .login-btn {
   background-color: rgb(0, 0, 0);
 }
-
 .login-btn:hover {
   background-color: rgb(0, 0, 0);
 }
-
 /* Adjustments for the header when logged in */
 header .register-btn {
   display: inline-block;
   margin-right: 20px;
 }
-
 header .login-btn {
   display: inline-block;
 }
-
 /* Login and Register buttons when logged out */
 header .login-btn,
 header .register-btn {
@@ -303,7 +296,6 @@ header .register-btn {
   margin-right: 20px;
 
 }
-
 /* Ensure proper spacing between header items */
 header > a, header > form {
   margin-left: 10px;
