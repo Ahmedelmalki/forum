@@ -98,6 +98,45 @@ async function fetchPosts() {
     postsContainer.innerHTML = `<p>Error loading posts: ${error.message}</p>`;
   }
 }
+//sound handiling
+const audio = document.getElementById("background-audio");
+const muteButton = document.getElementById("mute-button");
+
+// Mute/Unmute toggle logic
+muteButton.addEventListener("click", () => {
+    if (audio.muted) {
+        audio.muted = false;
+        muteButton.textContent = "Mute";
+    } else {
+        audio.muted = true;
+        muteButton.textContent = "Unmute";
+    }
+});
+
+// Pause audio when the tab is not visible
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        audio.pause();
+    } else if (document.visibilityState === "visible") {
+        audio.play();
+    }
+});
+
+// Define start and end times in seconds
+const startTime = 120;
+const endTime = 147;
+
+// Set the audio to start playing from the specified start time
+audio.currentTime = startTime;
+
+// Loop the specific section of the audio
+audio.addEventListener("timeupdate", () => {
+    if (audio.currentTime >= endTime) {
+        audio.currentTime = startTime;
+        audio.play();
+    }
+});
+
 function toggleComments(postId, button) {
   const commentSection = document.getElementById(`comment-section-${postId}`);
   console.log("Button clicked:", button.textContent);
