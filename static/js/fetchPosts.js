@@ -99,19 +99,39 @@ async function fetchPosts() {
   }
 }
 //sound handiling
+// Select audio and button elements
 const audio = document.getElementById("background-audio");
 const muteButton = document.getElementById("mute-button");
+const muteIcon = document.getElementById("mute-icon");
 
-// Mute/Unmute toggle logic
+// Define SVG paths for mute and unmute states
+const muteSVG = `
+    <path d="M12 3.5L6 8H2v8h4l6 4.5V3.5zM16.5 12l2.8-2.8c.4-.4.4-1 0-1.4s-1-.4-1.4 0l-2.8 2.8-2.8-2.8c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4l2.8 2.8-2.8 2.8c-.4.4-.4 1 0 1.4s1 .4 1.4 0l2.8-2.8 2.8 2.8c.4.4 1 .4 1.4 0s.4-1 0-1.4L16.5 12z" />
+`;
+const unmuteSVG = `
+    <path d="M12 3.5L6 8H2v8h4l6 4.5V3.5zM18 6c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1s1-.4 1-1V7c0-.6-.4-1-1-1zM15 9c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1s1-.4 1-1v-4c0-.6-.4-1-1-1z" />
+`;
+
+
+// Toggle mute state and update SVG
 muteButton.addEventListener("click", () => {
     if (audio.muted) {
+        // Unmute
         audio.muted = false;
-        muteButton.textContent = "Mute";
+        muteIcon.innerHTML = muteSVG; // Update to mute icon
+        muteButton.setAttribute("aria-label", "Mute");
     } else {
+        // Mute
         audio.muted = true;
-        muteButton.textContent = "Unmute";
+        muteIcon.innerHTML = unmuteSVG; // Update to unmute icon
+        muteButton.setAttribute("aria-label", "Unmute");
     }
 });
+
+// Optional: Debugging information
+console.log("Audio element:", audio);
+console.log("Mute button:", muteButton);
+
 
 // Pause audio when the tab is not visible
 document.addEventListener("visibilitychange", () => {
@@ -124,7 +144,7 @@ document.addEventListener("visibilitychange", () => {
 
 // Define start and end times in seconds
 const startTime = 120;
-const endTime = 147;
+const endTime = 146;
 
 // Set the audio to start playing from the specified start time
 audio.currentTime = startTime;
