@@ -55,7 +55,7 @@ func main() {
 		http.ServeFile(w, r, "static/templates/login.html")
 	})
 
-	http.HandleFunc("/login/submit", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/login/submit",func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			forum.LoginHandler(db)(w, r)
 		} else {
