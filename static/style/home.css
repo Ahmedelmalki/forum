@@ -63,9 +63,10 @@ header {
   border: 20px outset #fff;
 }
 
-header h1 {
-  font-size: 24px;
-  margin-right: 20px;
+/**** Handle the logo and title in the header at the left****/
+header a, h1 .logo {
+  font-size: 24rem;
+  margin-right: 20rem;
   flex-grow: 1; /* Ensures the header title is at the left */
   text-align: left;
 }
