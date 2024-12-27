@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -51,7 +50,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		cookie := CookieMaker(w)
-		err = InsretCookie(db, int(user_id), cookie, time.Now().Add(time.Hour*24))
+		err = InsretCookie(db, int(user_id), cookie)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -103,7 +102,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		cookie := CookieMaker(w)
-		err = InsretCookie(db, user_id, cookie, time.Now().Add(time.Hour*24))
+		err = InsretCookie(db, user_id, cookie)
 		if err != nil {
 			fmt.Println(err)
 			return
