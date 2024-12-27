@@ -19,6 +19,7 @@ type Post struct {
 	Title     string
 	Content   string
 	Category  string
+	Likes     int
 	CreatedAt time.Time
 }
 
