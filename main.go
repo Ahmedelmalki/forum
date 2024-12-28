@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./forum.db")
+	db, err := sql.Open("sqlite3", "./test.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
@@ -50,6 +50,9 @@ func main() {
 	})
 
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
+
+	// likes
+	http.HandleFunc("/like", forum.HandleLikes(db))
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/templates/login.html")

@@ -20,8 +20,6 @@ CREATE TABLE IF NOT EXISTS comments (
      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
      user_id INTEGER NOT NULL,
      post_id INTEGER NOT NULL,
-    --  username TEXT NOT NULL,
-    --  FOREIGN KEY (username) REFERENCES users (username),
      FOREIGN KEY (user_id) REFERENCES users (id),
      FOREIGN KEY (post_id) REFERENCES posts (id)
 );
@@ -32,4 +30,14 @@ CREATE TABLE IF NOT EXISTS sessions (
     exp_date DATETIME,
     user_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+CREATE TABLE if NOT EXISTS likes(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+        TypeOfLike TEXT not NULL,
+
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (post_id) REFERENCES posts (id)
 );
