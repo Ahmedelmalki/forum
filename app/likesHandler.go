@@ -15,12 +15,6 @@ type likes struct {
 	Type         string `json:"Type"`
 }
 
-// func UpdateLikeDislike(db *sql.DB, liketype string) {
-// 	switch liketype {
-// 	case "like":
-// 	}
-// }
-
 func HandleLikes(db *sql.DB) http.HandlerFunc {
 	var like likes
 
