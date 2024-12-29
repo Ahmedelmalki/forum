@@ -65,9 +65,9 @@ async function fetchPosts(category = "all") {
           ${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt).toLocaleString()}
         </div>
          <div class="post-actions">
-          <button class="post-btn like", id = ${post.ID}>❤️</button>
+<button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
           <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
-          <button class="post-btn dislike", style = "background:crimson",  id = ${post.ID}>👎</button>
+          <button class="post-btn dislike", style="background:none;"  id = ${post.ID}>👎</button>
           <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
         </div>
          <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
