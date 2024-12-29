@@ -47,7 +47,7 @@ async function loadComments(postId) {
           { label: "minute", seconds: 60 },
           { label: "second", seconds: 1 },
         ];
-      
+
         for (const interval of intervals) {
           const count = Math.floor(seconds / interval.seconds);
           if (count > 0) {
@@ -56,16 +56,22 @@ async function loadComments(postId) {
         }
         return "just now";
       }
-      
+
       commentElement.innerHTML = `
         <div class="comment">
-          <small>Posted by <b>@${comment.username}</b>, ${timeAgo(comment.created_at)}</small>
+          <small>Posted by <b>@${comment.username}</b>, ${timeAgo(
+        comment.created_at
+      )}</small>
           <p>${escapeHTML(comment.content)}</p>
-          <button class="like-btn" onclick="likeComment(${comment.id})">Like</button>
-          <button class="delete-btn" onclick="deleteComment(${comment.id})">Dislike</button>
+          <button class="like-btn" onclick="likeComment(${
+            comment.id
+          })">Like</button>
+          <button class="delete-btn" onclick="deleteComment(${
+            comment.id
+          })">Dislike</button>
         </div>
       `;
-      
+
       commentsList.appendChild(commentElement);
     });
   } catch (error) {
@@ -75,4 +81,4 @@ async function loadComments(postId) {
 /*************End Comment sections functions*****************/
 
 // Load posts when the page loads
-window.onload = fetchPosts;
+//window.onload = fetchPosts;
