@@ -16,6 +16,7 @@
       </select>
       <button type="button" id="apply-filter">Apply</button>
     </form>
+    <a href="/"> <button>back</button></a>
     <div id="posts"></div>
 
     <script src="/static/js/comments.js"></script>
@@ -24,7 +25,7 @@
       import { fetchPosts } from "/static/js/fetchPosts.js";
 
       // Injected from Go handler via template
-      const query = `{{.RawQuery}}`;
+      const query = `{{.Category}}`;
       console.log(`Query: ${query}`);
 
       // Use the fetchPosts function to process the query

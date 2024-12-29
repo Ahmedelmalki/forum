@@ -24,7 +24,7 @@
       </div>
 
        <!-- Filter Dropdown -->
-    <form id="filter-form">
+    <form id="filter-form" action="/category">
       <label for="category-filter">Filter by Category:</label>
       <select id="category-filter" name="category">
         <option value="all">All</option>
@@ -32,7 +32,7 @@
           <option value="science">Science</option>
           <option value="sport">Sport</option>
       </select>
-      <button type="button" id="apply-filter">Apply</button>
+      <button type="submit" id="apply-filter">Apply</button>
     </form>
 
       <div id="posts"></div>
