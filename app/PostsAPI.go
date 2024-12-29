@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 )
 
 func FetchPosts(db *sql.DB, category string) ([]Post, error) {
@@ -83,8 +82,9 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Cache-Control", "no-cache")
-		fmt.Println(json.NewEncoder(os.Stdout).Encode([]any{posts, user_id}))
+		/* this line sets an HTTP response header to control how the response 
+		is cached by clients (browsers) and intermediate caches (proxies).*/
+		 w.Header().Set("Cache-Control", "no-cache")
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
 			http.Error(w, "error encoding response", http.StatusInternalServerError)
 		}

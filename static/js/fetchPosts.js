@@ -1,5 +1,5 @@
 // Fetch posts from the API and render them
-async function fetchPosts(category = 'all') {
+async function fetchPosts(category = "all") {
   try {
     const url =
       category === "all"
@@ -123,15 +123,15 @@ async function fetchPosts(category = 'all') {
 }
 
 // entry point
-document.addEventListener('DOMContentLoaded', ()=>{
-  fetchPosts('all')
+document.addEventListener("DOMContentLoaded", () => {
+  //document.getElementById("apply-filter").click();
+  fetchPosts('all');
   // filtring logic
   document.getElementById("apply-filter").addEventListener("click", () => {
     const category = document.getElementById("category-filter").value;
     fetchPosts(category);
   });
-})
-
+});
 
 function toggleComments(postId, button) {
   const commentSection = document.getElementById(`comment-section-${postId}`);
@@ -178,7 +178,5 @@ function escapeHTML(str) {
       }[tag] || tag)
   );
 }
-
-
 
 //window.onload = fetchPosts;

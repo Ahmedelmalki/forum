@@ -33,5 +33,38 @@
         <button type="button" class="btn back-btn" onclick="window.location.href='/'">Back to Home</button>
       </form>
     </div>
+     <script>
+      const form = document.getElementById('new-post-form');
+      const submitButton = form.querySelector('.create-post');
+
+      form.addEventListener('submit', function (event) {
+        // Disable the submit button
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+
+        // Allow the form to proceed, but re-enable the button after a delay for demonstration purposes
+        fetch(form.action, {
+          method: form.method,
+          body: new FormData(form),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to submit post");
+            }
+            // Redirect or handle success
+            window.location.href = "/";
+          })
+          .catch((error) => {
+            console.error(error);
+            alert("An error occurred. Please try again.");
+            submitButton.disabled = false;
+            submitButton.textContent = "Create Post";
+          });
+
+        // Prevent the form's default submission action
+        event.preventDefault();
+      });
+    </script>
+
   </body>
 </html>
