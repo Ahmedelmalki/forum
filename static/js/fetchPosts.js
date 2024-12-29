@@ -55,55 +55,27 @@ async function fetchPosts(category = "all") {
         return "just now";
       }
       postCard.innerHTML = `
-        <div class="title">${escapeHTML(post.Title)}</div>
+         <div class="title">${escapeHTML(post.Title)}</div>
          <div class="post-username">by @${escapeHTML(post.UserName)}</div>
-        <div class="meta">
-          Category: ${escapeHTML(post.Category)} | 
-          Posted on: ${new Date(post.CreatedAt).toLocaleString()}
-        </div>
-        <div class="post-content">${escapeHTML(post.Content)}</div>
-          <div class="details-toggle" onclick="toggleDetails(this)">
+         <div class="post-content">${escapeHTML(post.Content)}</div>
+        <div class="details-toggle" onclick="toggleDetails(this)">
            <span class="details-text">Details</span>
         </div>
          <div class="meta hidden">
-          ${escapeHTML(post.Category)}, ${timeAgo(
-        post.CreatedAt
-      ).toLocaleString()}
+          ${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt).toLocaleString()}
         </div>
-         <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">
-             Show Comments
-           </button>
-          <div class="comment-section hidden" id="comment-section-${post.ID}">
-          <textarea class="comment-input" id="comment-input-${
-            post.ID
-          }" placeholder="Your comment"></textarea>
-          <button class="send-comment-btn" onclick="postComment(${
-            post.ID
-          }, 1)">Comment</button>
+         <div class="post-actions">
+          <button class="post-btn like", id = ${post.ID}>❤️</button>
+          <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
+          <button class="post-btn dislike", style = "background:crimson",  id = ${post.ID}>👎</button>
+          <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
+        </div>
+         <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
+        <div class="comment-section hidden" id="comment-section-${post.ID}">
+          <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
+          <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
           <div id="comments-list-${post.ID}" class="comments-list"></div>
-          <div class="post-likes like">${escapeHTML(
-            post.Likes.toString()
-          )} likes</div>
-                        <button class="post-btn dislike", style = "background:crimson",  id = ${
-                          post.ID
-                        }>Dislike</button>
-                <div class="post-dislikes" >${escapeHTML(
-                  post.Dislikes.toString()
-                )} dislikes</div>
 
-        </div>
-        <div class="post-actions">
-          <button class="post-btn like", id = ${post.ID}>Like</button>
-          <div class="post-likes like">${escapeHTML(
-            post.Likes.toString()
-          )} likes</div>
-                  <button class="post-btn dislike", style = "background:crimson",  id = ${
-                    post.ID
-                  }>Dislike</button>
-          <div class="post-dislikes" >${escapeHTML(
-            post.Dislikes.toString()
-          )} dislikes</div>
-        </div>
       `;
       likeEvent(postCard);
       postsContainer.appendChild(postCard);
@@ -121,6 +93,8 @@ async function fetchPosts(category = "all") {
     postsContainer.innerHTML = `<p>Error loading posts: ${error.message}</p>`;
   }
 }
+
+
 
 // entry point
 document.addEventListener("DOMContentLoaded", () => {
@@ -152,6 +126,7 @@ function toggleComments(postId, button) {
     button.textContent = "Show Comments";
   }
 }
+
 
 function toggleDetails(toggleElement) {
   const meta = toggleElement.nextElementSibling; // Select the `.meta` div
