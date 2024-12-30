@@ -137,6 +137,54 @@ h2 {
   float: left;
 
 }
+/*styling the likes and dislike*/
+/* General Button Styling */
+.post-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Adjust to the size of the icon */
+  height: 30px; /* Adjust to the size of the icon */
+  cursor: pointer;
+  font-size: 18px; /* Size of the icon */
+  color: inherit; /* Ensures it matches the parent color */
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hover Effect */
+.post-btn:hover {
+  transform: scale(1.1); /* Slightly enlarges the button */
+  background-color: rgba(0, 0, 0, 0.1); /* Adds a hover effect */
+  border-radius: 50%; /* Optional for a circular hover area */
+}
+
+/* Like and Dislike Buttons */
+.like {
+  color: red; /* Like icon color */
+}
+
+.dislike {
+  color: blue; /* Dislike icon color */
+}
+
+/* Post Actions Container */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Spacing between icons and counters */
+}
+
+/* Counter Styling */
+.post-likes, .post-dislikes {
+  font-size: 14px;
+  color: black;
+}
+
+
 
 .post-card {
   margin-top: 1rem;

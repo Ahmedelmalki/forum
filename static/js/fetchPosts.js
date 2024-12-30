@@ -66,11 +66,13 @@ export async function fetchPosts(category = "all") {
           ${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt).toLocaleString()}
         </div>
          <div class="post-actions">
-          <button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
-          <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
-          <button class="post-btn dislike", style="background:none;"  id = ${post.ID}>👎</button>
-          <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
-        </div>
+         <button class="post-btn like" id="like-${post.ID}" onclick="handleLike(${post.ID})">❤️</button>
+         <div class="post-likes">${escapeHTML(post.Likes.toString())}</div>
+
+         <button class="post-btn dislike" id="dislike-${post.ID}" onclick="handleDislike(${post.ID})">👎</button>
+         <div class="post-dislikes">${escapeHTML(post.Dislikes.toString())}</div>
+         </div>
+
          <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
         <div class="comment-section hidden" id="comment-section-${post.ID}">
           <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
@@ -135,6 +137,23 @@ export function toggleDetails(toggleElement) {
     ? "Details"
     : "Hide Details";
 }
+// Add event listener for filter toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const filterToggle = document.getElementById("filter-toggle");
+  const filterForm = document.getElementById("filter-form");
+
+  filterToggle.addEventListener("click", () => {
+    filterForm.classList.toggle("hidden");
+  });
+
+  // Filtering logic
+  document.getElementById("apply-filter").addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent default form submission
+    const category = document.getElementById("category-filter").value;
+    fetchPosts(category); // Call fetchPosts with the selected category
+  });
+});
+
 
 // Utility function to escape HTML to prevent XSS
 export function escapeHTML(str) {

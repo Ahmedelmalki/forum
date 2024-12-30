@@ -23,8 +23,21 @@
       <h2>Posts</h2>
       </div>
 
+      <div id="filter-toggle" class="filter-icon">☰</div>
+
+       <!-- Filter Dropdown hidden -->
+       <form id="filter-form" class="hidden">
+        <label for="category-filter">Filter by Category:</label>
+        <select id="category-filter" name="category">
+          <option value="all">All</option>
+          <option value="tech">Tech</option>
+          <option value="science">Science</option>
+          <option value="sport">Sport</option>
+        </select>
+        <button type="submit" id="apply-filter">Apply</button>
+      </form>
        <!-- Filter Dropdown -->
-    <form id="filter-form" action="/category">
+    <!-- <form id="filter-form" action="/category">
       <label for="category-filter">Filter by Category:</label>
       <select id="category-filter" name="category">
         <option value="all">All</option>
@@ -33,7 +46,7 @@
           <option value="sport">Sport</option>
       </select>
       <button type="submit" id="apply-filter">Apply</button>
-    </form>
+    </form> -->
 
       <div id="posts"></div>
     </div>
