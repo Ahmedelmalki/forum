@@ -29,6 +29,11 @@ b {
 small {
   color: rebeccapurple;
 }
+.title {
+  text-align: center;
+  border: 1px solid;
+  padding: 1px;
+}
 .post-username {
   background-color: black;
   color: #fff;
