@@ -34,8 +34,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE TABLE if NOT EXISTS likes(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-        TypeOfLike TEXT not NULL,
-
+    TypeOfLike TEXT not NULL,
     user_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)

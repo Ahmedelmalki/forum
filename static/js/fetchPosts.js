@@ -95,17 +95,6 @@ export async function fetchPosts(category = "all") {
   }
 }
 
-// entry point
-// document.addEventListener("DOMContentLoaded", () => {
-//   //document.getElementById("apply-filter").click();
-//   fetchPosts('all');
-//   // filtring logic
-//   document.getElementById("apply-filter").addEventListener("click", () => {
-//     const category = document.getElementById("category-filter").value;
-//     fetchPosts(category);
-//   });
-// });
-
 export function toggleComments(postId, button) {
   const commentSection = document.getElementById(`comment-section-${postId}`);
   console.log("Button clicked:", button.textContent);
