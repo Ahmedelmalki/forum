@@ -1,5 +1,5 @@
 // Fetch posts from the API and render them
-async function fetchPosts(category = "all") {
+export async function fetchPosts(category = "all") {
   try {
     const url =
       category === "all"

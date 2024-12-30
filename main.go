@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -100,6 +101,7 @@ func main() {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
+	http.Handle("/category", CategoryHandler(db))
 
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
@@ -108,4 +110,25 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
 
+func CategoryHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Parse the template file
+		tmpl, err := template.ParseFiles("static/templates/category.html")
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
 
+		// Create a data structure to pass to the template
+		data := map[string]interface{}{
+			"Category": r.URL.Query().Get("category"), // Optional: current category
+			"RawQuery": r.URL.RawQuery,                // Full raw query string
+		}
+		fmt.Println(data)
+		// Execute the template with the data
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
+	}
+}

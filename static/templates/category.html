@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Category</title>
+  </head>
+  <body>
+    <form id="filter-form">
+      <label for="category-filter">Filter by Category:</label>
+      <select id="category-filter" name="category">
+        <option value="all">All</option>
+        <option value="tech">Tech</option>
+        <option value="science">Science</option>
+        <option value="sport">Sport</option>
+      </select>
+      <button type="button" id="apply-filter">Apply</button>
+    </form>
+    <a href="/"> <button>back</button></a>
+    <div id="posts"></div>
+
+    <script src="/static/js/comments.js"></script>
+    <script src="/static/js/likes.js"></script>
+    <script type="module">
+      import { fetchPosts } from "/static/js/fetchPosts.js";
+
+      // Injected from Go handler via template
+      const query = `{{.Category}}`;
+      console.log(`Query: ${query}`);
+
+      // Use the fetchPosts function to process the query
+      await fetchPosts(query);
+    </script>
+  </body>
+</html>
