@@ -44,25 +44,7 @@ export async function fetchPosts(category = "all") {
           { label: "hour", seconds: 3600 },
           { label: "minute", seconds: 60 },
           { label: "second", seconds: 1 },
-        ];function toggleComments(postId, button) {
-          const commentSection = document.getElementById(`comment-section-${postId}`);
-          console.log("Button clicked:", button.textContent);
-          console.log(
-            "Comment section hidden:",
-            commentSection.classList.contains("hidden")
-          );
-        
-          if (commentSection.classList.contains("hidden")) {
-            console.log("Showing comments for post:", postId);
-            commentSection.classList.remove("hidden");
-            button.textContent = "Hide Comments";
-            loadComments(postId); // Fetch and display comments
-          } else {
-            console.log("Hiding comments for post:", postId);
-            commentSection.classList.add("hidden");
-            button.textContent = "Show Comments";
-          }
-        }
+        ];
 
         for (const interval of intervals) {
           const count = Math.floor(seconds / interval.seconds);
@@ -113,20 +95,18 @@ export async function fetchPosts(category = "all") {
   }
 }
 
-
-
 // entry point
-document.addEventListener("DOMContentLoaded", () => {
-  //document.getElementById("apply-filter").click();
-  fetchPosts('all');
-  // filtring logic
-  document.getElementById("apply-filter").addEventListener("click", () => {
-    const category = document.getElementById("category-filter").value;
-    fetchPosts(category);
-  });
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   //document.getElementById("apply-filter").click();
+//   fetchPosts('all');
+//   // filtring logic
+//   document.getElementById("apply-filter").addEventListener("click", () => {
+//     const category = document.getElementById("category-filter").value;
+//     fetchPosts(category);
+//   });
+// });
 
-function toggleComments(postId, button) {
+export function toggleComments(postId, button) {
   const commentSection = document.getElementById(`comment-section-${postId}`);
   console.log("Button clicked:", button.textContent);
   console.log(
@@ -135,7 +115,7 @@ function toggleComments(postId, button) {
   );
 
   if (commentSection.classList.contains("hidden")) {
-    console.log("Showing cometamments for post:", postId);
+    console.log("Showing comments for post:", postId);
     commentSection.classList.remove("hidden");
     button.textContent = "Hide Comments";
     loadComments(postId); // Fetch and display comments
@@ -146,8 +126,7 @@ function toggleComments(postId, button) {
   }
 }
 
-
-function toggleDetails(toggleElement) {
+export function toggleDetails(toggleElement) {
   const meta = toggleElement.nextElementSibling; // Select the `.meta` div
   meta.classList.toggle("hidden"); // Toggle the `hidden` class
 
@@ -158,7 +137,7 @@ function toggleDetails(toggleElement) {
 }
 
 // Utility function to escape HTML to prevent XSS
-function escapeHTML(str) {
+export function escapeHTML(str) {
   if (typeof str !== "string") return "";
   return str.replace(
     /[&<>'"]/g,
@@ -174,3 +153,7 @@ function escapeHTML(str) {
 }
 
 //window.onload = fetchPosts;
+window.escapeHTML = escapeHTML;
+window.fetchPosts = fetchPosts;
+window.toggleComments = toggleComments;
+window.toggleDetails = toggleDetails;

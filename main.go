@@ -8,11 +8,68 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
+	"time"
 
 	forum "forum/app"
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+type visitor struct {
+	lastSeen time.Time
+	count    int
+}
+
+var (
+	visitors = make(map[string]*visitor)
+	mu       sync.Mutex
+)
+
+func cleanupVisitors() {
+	for {
+		time.Sleep(1 * time.Minute)
+		mu.Lock()
+		for ip, v := range visitors {
+			if time.Since(v.lastSeen) > 1*time.Minute {
+				delete(visitors, ip)
+			}
+		}
+		mu.Unlock()
+	}
+}
+
+func rateLimitMiddleware(next http.Handler) http.Handler {
+	go cleanupVisitors()
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ip := r.RemoteAddr
+
+		mu.Lock()
+		v, exists := visitors[ip]
+		if !exists {
+			visitors[ip] = &visitor{lastSeen: time.Now(), count: 1}
+			mu.Unlock()
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if time.Since(v.lastSeen) > 1*time.Minute {
+			v.count = 1
+			v.lastSeen = time.Now()
+		} else {
+			v.count++
+		}
+		mu.Unlock()
+
+		if v.count > 5 {
+			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
 
 func main() {
 	db, err := sql.Open("sqlite3", "./testingFilter.db")
@@ -67,19 +124,25 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/newPost", func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/newPost", rateLimitMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
+			// Validate the user's cookie
 			_, err := forum.ValidateCookie(db, w, r)
 			if err != nil {
 				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
 			}
+			// Serve the HTML template for new posts
 			http.ServeFile(w, r, "static/templates/newPost.html")
 		} else if r.Method == http.MethodPost {
+			// Handle new post creation
 			forum.PostNewPostHandler(db)(w, r)
 		} else {
+			// Return a 405 Method Not Allowed error for unsupported methods
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
-	})
+	})))
+
 	// Comments handling
 
 	http.HandleFunc("/comments", func(w http.ResponseWriter, r *http.Request) {
@@ -106,8 +169,8 @@ func main() {
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 
-	fmt.Println("Server is running on http://localhost:8090")
-	log.Fatal(http.ListenAndServe(":8090", nil))
+	fmt.Println("Server is running on http://localhost:8765")
+	log.Fatal(http.ListenAndServe(":8765", nil))
 }
 
 func CategoryHandler(db *sql.DB) http.HandlerFunc {
