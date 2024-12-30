@@ -102,6 +102,14 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
+		//handling one session at a time
+        deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
+        _, err = db.Exec(deleteQuery, user_id)
+        if err != nil {
+            http.Error(w, "Error cleaning old sessions", http.StatusInternalServerError)
+            return
+        }
+		
 		cookie := CookieMaker(w)
 		err = InsretCookie(db, user_id, cookie, time.Now().Add(time.Hour*24))
 		if err != nil {
