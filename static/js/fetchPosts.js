@@ -44,7 +44,25 @@ export async function fetchPosts(category = "all") {
           { label: "hour", seconds: 3600 },
           { label: "minute", seconds: 60 },
           { label: "second", seconds: 1 },
-        ];
+        ];function toggleComments(postId, button) {
+          const commentSection = document.getElementById(`comment-section-${postId}`);
+          console.log("Button clicked:", button.textContent);
+          console.log(
+            "Comment section hidden:",
+            commentSection.classList.contains("hidden")
+          );
+        
+          if (commentSection.classList.contains("hidden")) {
+            console.log("Showing comments for post:", postId);
+            commentSection.classList.remove("hidden");
+            button.textContent = "Hide Comments";
+            loadComments(postId); // Fetch and display comments
+          } else {
+            console.log("Hiding comments for post:", postId);
+            commentSection.classList.add("hidden");
+            button.textContent = "Show Comments";
+          }
+        }
 
         for (const interval of intervals) {
           const count = Math.floor(seconds / interval.seconds);
@@ -55,55 +73,28 @@ export async function fetchPosts(category = "all") {
         return "just now";
       }
       postCard.innerHTML = `
-        <div class="title">${escapeHTML(post.Title)}</div>
+         <div class="title">${escapeHTML(post.Title)}</div>
          <div class="post-username">by @${escapeHTML(post.UserName)}</div>
-        <div class="meta">
-          Category: ${escapeHTML(post.Category)} | 
-          Posted on: ${new Date(post.CreatedAt).toLocaleString()}
-        </div>
-        <div class="post-content">${escapeHTML(post.Content)}</div>
-          <div class="details-toggle" onclick="toggleDetails(this)">
+         
+         <div class="post-content">${escapeHTML(post.Content)}</div>
+        <div class="details-toggle" onclick="toggleDetails(this)">
            <span class="details-text">Details</span>
         </div>
          <div class="meta hidden">
-          ${escapeHTML(post.Category)}, ${timeAgo(
-        post.CreatedAt
-      ).toLocaleString()}
+          ${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt).toLocaleString()}
         </div>
-         <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">
-             Show Comments
-           </button>
-          <div class="comment-section hidden" id="comment-section-${post.ID}">
-          <textarea class="comment-input" id="comment-input-${
-            post.ID
-          }" placeholder="Your comment"></textarea>
-          <button class="send-comment-btn" onclick="postComment(${
-            post.ID
-          }, 1)">Comment</button>
+         <div class="post-actions">
+          <button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
+          <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
+          <button class="post-btn dislike", style="background:none;"  id = ${post.ID}>👎</button>
+          <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
+        </div>
+         <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
+        <div class="comment-section hidden" id="comment-section-${post.ID}">
+          <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
+          <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
           <div id="comments-list-${post.ID}" class="comments-list"></div>
-          <div class="post-likes like">${escapeHTML(
-            post.Likes.toString()
-          )} likes</div>
-                        <button class="post-btn dislike", style = "background:crimson",  id = ${
-                          post.ID
-                        }>Dislike</button>
-                <div class="post-dislikes" >${escapeHTML(
-                  post.Dislikes.toString()
-                )} dislikes</div>
 
-        </div>
-        <div class="post-actions">
-          <button class="post-btn like", id = ${post.ID}>Like</button>
-          <div class="post-likes like">${escapeHTML(
-            post.Likes.toString()
-          )} likes</div>
-                  <button class="post-btn dislike", style = "background:crimson",  id = ${
-                    post.ID
-                  }>Dislike</button>
-          <div class="post-dislikes" >${escapeHTML(
-            post.Dislikes.toString()
-          )} dislikes</div>
-        </div>
       `;
       likeEvent(postCard);
       postsContainer.appendChild(postCard);
@@ -122,16 +113,18 @@ export async function fetchPosts(category = "all") {
   }
 }
 
+
+
 // entry point
-// document.addEventListener("DOMContentLoaded", () => {
-//   //document.getElementById("apply-filter").click();
-//   fetchPosts('all');
-//   // filtring logic
-//   document.getElementById("apply-filter").addEventListener("click", () => {
-//     const category = document.getElementById("category-filter").value;
-//     fetchPosts(category);
-//   });
-// });
+document.addEventListener("DOMContentLoaded", () => {
+  //document.getElementById("apply-filter").click();
+  fetchPosts('all');
+  // filtring logic
+  document.getElementById("apply-filter").addEventListener("click", () => {
+    const category = document.getElementById("category-filter").value;
+    fetchPosts(category);
+  });
+});
 
 function toggleComments(postId, button) {
   const commentSection = document.getElementById(`comment-section-${postId}`);
@@ -142,7 +135,7 @@ function toggleComments(postId, button) {
   );
 
   if (commentSection.classList.contains("hidden")) {
-    console.log("Showing comments for post:", postId);
+    console.log("Showing cometamments for post:", postId);
     commentSection.classList.remove("hidden");
     button.textContent = "Hide Comments";
     loadComments(postId); // Fetch and display comments
@@ -152,6 +145,7 @@ function toggleComments(postId, button) {
     button.textContent = "Show Comments";
   }
 }
+
 
 function toggleDetails(toggleElement) {
   const meta = toggleElement.nextElementSibling; // Select the `.meta` div
