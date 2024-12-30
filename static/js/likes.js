@@ -63,4 +63,3 @@ function likeEvent(post) {
   }
 }
 
-// setInterval(()=>UpdateLike(post), 1000);

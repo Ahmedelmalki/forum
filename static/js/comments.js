@@ -1,5 +1,4 @@
 /*************Start Comment sections functions*****************/
-// Function to post a comment
 async function postComment(postId, userId) {
   const commentInput = document.getElementById(`comment-input-${postId}`);
   const commentContent = commentInput.value;
@@ -78,7 +77,4 @@ async function loadComments(postId) {
     console.error("RError of loading comments:", error);
   }
 }
-/*************End Comment sections functions*****************/
 
-// Load posts when the page loads
-//window.onload = fetchPosts;
