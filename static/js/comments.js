@@ -58,16 +58,11 @@ async function loadComments(postId) {
 
       commentElement.innerHTML = `
         <div class="comment">
-          <small>Posted by <b>@${comment.username}</b>, ${timeAgo(
-        comment.created_at
-      )}</small>
+          <small>Posted by <b>@${comment.username}</b>, ${timeAgo(comment.created_at)}</small>
+          <p>here 🆘</p>
           <p>${escapeHTML(comment.content)}</p>
-          <button class="like-btn" onclick="likeComment(${
-            comment.id
-          })">Like</button>
-          <button class="delete-btn" onclick="deleteComment(${
-            comment.id
-          })">Dislike</button>
+          <button class="like-btn" onclick="likeComment(${comment.id})">Like</button>
+          <button class="delete-btn" onclick="deleteComment(${comment.id})">Dislike</button>
         </div>
       `;
 

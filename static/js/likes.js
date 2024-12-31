@@ -1,27 +1,18 @@
 async function UpdateLike(post) {
   try {
     const response = await fetch("/like");
-    console.log("Fetching done");
-
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const likes = await response.json();
-    console.log("LIkes fetched successfully");
-    post.querySelector(
-      ".post-actions .post-likes"
-    ).textContent = `${likes.LikeCOunt} likes`;
-    post.querySelector(
-      ".post-actions .post-dislikes"
-    ).textContent = `${likes.DislikeCOunt} dislikes`;
+    post.querySelector(".post-actions .post-likes").textContent = `${likes.LikeCOunt} likes`;
+    post.querySelector(".post-actions .post-dislikes").textContent = `${likes.DislikeCOunt} dislikes`;
   } catch (err) {
     console.error("Error fetching likes:", err);
   }
 }
 function likeEvent(post) {
   likeButton = post.querySelectorAll(".post-actions .post-btn");
-  console.log(likeButton);
-
   if (window.cookie == "") {
     likeButton.disabled = true;
     likeButton.style.backgroundcolor = "#a9a9a9";

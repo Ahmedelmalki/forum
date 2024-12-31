@@ -229,7 +229,6 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 			"Category": r.URL.Query().Get("category"),
 			"RawQuery": r.URL.RawQuery,               
 		}
-		fmt.Println(data)
 		// Execute the template with the data
 		err = tmpl.Execute(w, data)
 		if err != nil {

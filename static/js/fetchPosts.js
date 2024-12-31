@@ -1,10 +1,7 @@
 // Fetch posts from the API and render them
 export async function fetchPosts(category = "all") {
   try {
-    const url =
-      category === "all"
-        ? "/posts"
-        : `/posts?category=${encodeURIComponent(category)}`;
+    const url = category === "all" ? "/posts" : `/posts?category=${encodeURIComponent(category)}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -82,9 +79,7 @@ export async function fetchPosts(category = "all") {
       postsContainer.appendChild(postCard);
     });
     if (posts[1] === 0) {
-      document
-        .querySelectorAll(".comment-input, .send-comment-btn")
-        .forEach((elem) => {
+      document.querySelectorAll(".comment-input, .send-comment-btn").forEach((elem) => {
           elem.style.display = "none";
         });
     }
@@ -104,7 +99,6 @@ export function toggleComments(postId, button) {
   );
 
   if (commentSection.classList.contains("hidden")) {
-    console.log("Showing comments for post:", postId);
     commentSection.classList.remove("hidden");
     button.textContent = "Hide Comments";
     loadComments(postId); // Fetch and display comments
@@ -120,9 +114,7 @@ export function toggleDetails(toggleElement) {
   meta.classList.toggle("hidden"); // Toggle the `hidden` class
 
   const detailsText = toggleElement.querySelector(".details-text");
-  detailsText.textContent = meta.classList.contains("hidden")
-    ? "Details"
-    : "Hide Details";
+  detailsText.textContent = meta.classList.contains("hidden") ? "Details" : "Hide Details";
 }
 
 // Utility function to escape HTML to prevent XSS
