@@ -29,53 +29,7 @@ export async function fetchPosts(category = "all") {
     }
 
     posts[0].forEach((post) => {
-      const postCard = document.createElement("div");
-      postCard.className = "post-card";
-
-      function timeAgo(date) {
-        const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-        const intervals = [
-          { label: "year", seconds: 31536000 },
-          { label: "month", seconds: 2592000 },
-          { label: "day", seconds: 86400 },
-          { label: "hour", seconds: 3600 },
-          { label: "minute", seconds: 60 },
-          { label: "second", seconds: 1 },
-        ];
-
-        for (const interval of intervals) {
-          const count = Math.floor(seconds / interval.seconds);
-          if (count > 0) {
-            return `${count} ${interval.label}${count !== 1 ? "s" : ""} ago`;
-          }
-        }
-        return "just now";
-      }
-      postCard.innerHTML = `
-         <div class="title">${escapeHTML(post.Title)}</div>
-         <div class="post-username">by @${escapeHTML(post.UserName)}</div>
-         
-         <div class="post-content">${escapeHTML(post.Content)}</div>
-        <div class="details-toggle" onclick="toggleDetails(this)">
-           <span class="details-text">Details</span>
-        </div>
-         <div class="meta hidden">
-          ${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt).toLocaleString()}
-        </div>
-         <div class="post-actions">
-          <button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
-          <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
-          <button class="post-btn dislike", style="background:none;"  id = ${post.ID}>👎</button>
-          <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
-        </div>
-         <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
-        <div class="comment-section hidden" id="comment-section-${post.ID}">
-          <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
-          <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
-          <div id="comments-list-${post.ID}" class="comments-list"></div>
-
-      `;
-      likeEvent(postCard);
+      const postCard = createPostCard(post);
       postsContainer.appendChild(postCard);
     });
     if (posts[1] === 0) {
@@ -90,51 +44,35 @@ export async function fetchPosts(category = "all") {
   }
 }
 
-export function toggleComments(postId, button) {
-  const commentSection = document.getElementById(`comment-section-${postId}`);
-  console.log("Button clicked:", button.textContent);
-  console.log(
-    "Comment section hidden:",
-    commentSection.classList.contains("hidden")
-  );
+// Function to create a post card element
+function createPostCard(post) {
+  const postCard = document.createElement("div");
+  postCard.className = "post-card";
 
-  if (commentSection.classList.contains("hidden")) {
-    commentSection.classList.remove("hidden");
-    button.textContent = "Hide Comments";
-    loadComments(postId); // Fetch and display comments
-  } else {
-    console.log("Hiding comments for post:", postId);
-    commentSection.classList.add("hidden");
-    button.textContent = "Show Comments";
-  }
+  postCard.innerHTML = `
+    <div class="title">${escapeHTML(post.Title)}</div>
+    <div class="post-username">by @${escapeHTML(post.UserName)}</div>
+    <div class="post-content">${escapeHTML(post.Content)}</div>
+    <div class="details-toggle" onclick="toggleDetails(this)">
+      <span class="details-text">Details</span>
+    </div>
+    <div class="meta hidden">${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt)}</div>
+    <div class="post-actions">
+      <button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
+      <div class="post-likes like">${escapeHTML(post.Likes.toString())}</div>
+      <button class="post-btn dislike" style="background:none;" id="${post.ID}">👎</button>
+      <div class="post-dislikes">${escapeHTML(post.Dislikes.toString())}</div>
+    </div>
+    <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
+    <div class="comment-section hidden" id="comment-section-${post.ID}">
+      <textarea class="comment-input" id="comment-input-${post.ID}" placeholder="Your comment"></textarea>
+      <button class="send-comment-btn" onclick="postComment(${post.ID}, 1)">Comment</button>
+      <div id="comments-list-${post.ID}" class="comments-list"></div>
+    </div>
+  `;
+  
+  likeEvent(postCard);
+  return postCard;
 }
 
-export function toggleDetails(toggleElement) {
-  const meta = toggleElement.nextElementSibling; // Select the `.meta` div
-  meta.classList.toggle("hidden"); // Toggle the `hidden` class
-
-  const detailsText = toggleElement.querySelector(".details-text");
-  detailsText.textContent = meta.classList.contains("hidden") ? "Details" : "Hide Details";
-}
-
-// Utility function to escape HTML to prevent XSS
-export function escapeHTML(str) {
-  if (typeof str !== "string") return "";
-  return str.replace(
-    /[&<>'"]/g,
-    (tag) =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;",
-      }[tag] || tag)
-  );
-}
-
-//window.onload = fetchPosts;
-window.escapeHTML = escapeHTML;
 window.fetchPosts = fetchPosts;
-window.toggleComments = toggleComments;
-window.toggleDetails = toggleDetails;

@@ -41,8 +41,11 @@
     <script src="/static/js/fetchPosts.js"></script>
     <script src="/static/js/comments.js"></script>
       <script src="/static/js/likes.js"></script>
+      <script src="/static/js/helpers.js"></script>
       <script type="module">
-        import {fetchPosts , toggleComments, toggleDetails} from "/static/js/fetchPosts.js"
+        import {fetchPosts } from "/static/js/fetchPosts.js";
+        import { toggleComments, toggleDetails } from "/static/js/helpers.js";
+        
         fetchPosts();
       </script>
     

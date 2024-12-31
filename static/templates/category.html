@@ -14,6 +14,7 @@
     <script src="/static/js/likes.js"></script>
     <script type="module">
       import { fetchPosts } from "/static/js/fetchPosts.js";
+       import { escapeHTML } from "/static/js/helpers.js";
 
       // Injected from Go handler via template
       const query = `{{.Category}}`;
