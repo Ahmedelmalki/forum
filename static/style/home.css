@@ -157,25 +157,25 @@ h2 {
 
 /* Hover Effect */
 .post-btn:hover {
-  transform: scale(1.1); /* Slightly enlarges the button */
-  background-color: rgba(0, 0, 0, 0.1); /* Adds a hover effect */
-  border-radius: 50%; /* Optional for a circular hover area */
+  transform: scale(1.7); 
+  color: #070707;
+  border-radius: 50%; 
 }
-
 /* Like and Dislike Buttons */
 .like {
-  color: red; /* Like icon color */
+  color: grey /* Like icon color */
 }
 
 .dislike {
-  color: blue; /* Dislike icon color */
+  color: grey /* Dislike icon color */
 }
 
 /* Post Actions Container */
 .post-actions {
-  display: flex;
+  display:  ruby;
   align-items: center;
   gap: 10px; /* Spacing between icons and counters */
+
 }
 
 /* Counter Styling */
@@ -247,10 +247,7 @@ h2 {
   font-size: 14px;
   
 }
-.post-actions {
-  background-color: white;
-  opacity: 0.9;
-}
+
 .send-comment-btn:hover {
   background-color: #555;
 }
