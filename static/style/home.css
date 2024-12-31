@@ -185,7 +185,14 @@ h2 {
 }
 
 
-
+/* #filter-form {
+  margin-right: auto;
+}
+#filter-toggle{
+  margin-right: auto;
+  text-align: center;
+  width: 10%;
+} */
 .post-card {
   margin-top: 1rem;
   padding: 1rem;
