@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 CREATE TABLE IF NOT EXISTS comments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
      content TEXT NOT NULL,
      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
      user_id INTEGER NOT NULL,
@@ -39,4 +39,13 @@ CREATE TABLE if NOT EXISTS likes(
     post_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
     FOREIGN KEY (post_id) REFERENCES posts (id)
+);
+
+CREATE TABLE if NOT EXISTS likesOnComment(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    TypeOfLike TEXT not NULL,
+    user_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (comment_id) REFERENCES comments (id)
 );

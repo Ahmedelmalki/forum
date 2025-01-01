@@ -3,15 +3,14 @@ package forum
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
 type likes struct {
 	User_Id      int    `json:"UserId"`
 	Post_Id      int    `json:"PostId"`
-	LikeCOunt    int    `json:"LikeCOunt"`
-	DislikeCOunt int    `json:"DislikeCOunt"`
+	LikeCount    int    `json:"LikeCOunt"`
+	DisLikeCount int    `json:"DislikeCOunt"`
 	Type         string `json:"Type"`
 }
 
@@ -36,7 +35,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 					http.Redirect(w, r, "/", http.StatusSeeOther)
 					return
 				}
-				like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, like.Type)
+				like.LikeCount, err = countLikesForPost(db, like.Post_Id, like.Type)
 				if err != nil {
 					http.Error(w, "Error counting likes", http.StatusInternalServerError)
 					return
@@ -86,20 +85,18 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 						http.Error(w, "No Active Session", http.StatusInternalServerError)
 						return
 					}
-					like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, "like")
+					like.LikeCount, err = countLikesForPost(db, like.Post_Id, "like")
 					if err != nil {
 						http.Error(w, "Error Counting like", http.StatusInternalServerError)
 						return
 					}
-					like.DislikeCOunt, err = countLikesForPost(db, like.Post_Id, "dislike")
+					like.DisLikeCount, err = countLikesForPost(db, like.Post_Id, "dislike")
 					if err != nil {
 						http.Error(w, "Error Counting dislike", http.StatusInternalServerError)
 						return
 					}
 					w.Header().Set("Content-Type", "application/json")
 					json.NewEncoder(w).Encode(&like)
-					fmt.Println("heeeeeeere")
-					fmt.Println(like)
 				}
 			}
 
@@ -114,11 +111,11 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 
 func countLikesForPost(db *sql.DB, postID int, liketype string) (int, error) {
 	query := "SELECT COUNT(*) FROM likes WHERE post_id = ? AND TypeOfLike = ? "
-	var likeCount int
-	err := db.QueryRow(query, postID, liketype).Scan(&likeCount)
+	var LikeCount int
+	err := db.QueryRow(query, postID, liketype).Scan(&LikeCount)
 	if err != nil {
 		return 0, err
 	}
 
-	return likeCount, nil
+	return LikeCount, nil
 }

@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./db/likesOnCmnts.db")
+	db, err := sql.Open("sqlite3", "./db/likesOnCmnts10.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
@@ -56,7 +56,8 @@ func main() {
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
 	// likes
-	http.HandleFunc("/like", forum.HandleLikes(db))
+	http.HandleFunc("/Postlike", forum.HandleLikes(db))
+	http.HandleFunc("/Commentlike", forum.HandleLikesOnComments(db))
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/templates/login.html")
@@ -92,10 +93,13 @@ func main() {
 	// Comments handling
 
 	http.HandleFunc("/comments", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("🚨🚨🚨🚨🚨🚨🚨🚨")
 		switch r.Method {
 		case http.MethodPost:
+			fmt.Println("post :",r.Body)
 			forum.CreateComment(db)(w, r)
 		case http.MethodGet:
+			fmt.Println("get :",r.Body)
 			forum.GetComments(db)(w, r)
 		default:
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

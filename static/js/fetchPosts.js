@@ -58,9 +58,9 @@ function createPostCard(post) {
     </div>
     <div class="meta hidden">${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt)}</div>
     <div class="post-actions">
-      <button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
+      <button class="post-btn like" style="background:none;" id="${post.ID}">👍🏽</button>
       <div class="post-likes like">${escapeHTML(post.Likes.toString())}</div>
-      <button class="post-btn dislike" style="background:none;" id="${post.ID}">👎</button>
+      <button class="post-btn dislike" style="background:none;" id="${post.ID}">👎🏽</button>
       <div class="post-dislikes">${escapeHTML(post.Dislikes.toString())}</div>
     </div>
     <button class="comment-btn" onclick="toggleComments(${post.ID}, this)">Show Comments</button>
@@ -70,6 +70,7 @@ function createPostCard(post) {
       <div id="comments-list-${post.ID}" class="comments-list"></div>
     </div>
   `;
+  console.log(post.ID, "<<-----")
   
   likeEvent(postCard);
   return postCard;

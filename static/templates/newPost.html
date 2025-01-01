@@ -4,15 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
-
     <link rel="stylesheet" href="static/style/newPost.css" />
-
     <title>New Post</title>
   </head>
   <body>
-    <header>
-      <link rel="stylesheet" href="/static/style.css" />
-    </header>
     <div class="container">
       <h1>Create a New Post</h1>
       <form id="newPostForm" action="/newPost" method="post">
@@ -35,19 +30,13 @@
     </div>
       <script>
         const createPostButton = document.getElementById('createPostButton');
-
-        // Add an event listener for form submission
         document.getElementById('newPostForm').addEventListener('submit', (event) => {
-          console.log("###################### here #############")
-          // Disable the button to prevent multiple submissions
           createPostButton.disabled = true;
           createPostButton.textContent = 'Submitting...';
-
-          // Optionally, add a timeout to re-enable the button in case of network failure
           setTimeout(() => {
             createPostButton.disabled = false;
             createPostButton.textContent = 'Create Post';
-          }, 5000); // Re-enable after 5 seconds
+          }, 5000);
         });
       </script>
   </body>

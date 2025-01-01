@@ -1,6 +1,7 @@
 async function postComment(postId, userId) {
   const commentInput = document.getElementById(`comment-input-${postId}`);
   const commentContent = commentInput.value;
+  console.log("🚨🚨🚨🚨🚨🚨🚨🚨",commentInput.value)
 
   try {
     const response = await fetch("/comments", {
@@ -44,16 +45,19 @@ async function loadComments(postId) {
 
 // Function to create a comment element
 function createCommentElement(comment) {
+  console.log("============>>",comment)
   const commentElement = document.createElement("div");
   
   commentElement.innerHTML = `
     <div class="comment">
       <small>Posted by <b>@${comment.username}</b>, ${timeAgo(comment.created_at)}</small>
       <p>${escapeHTML(comment.content)}</p>
-      <button class="like-btn" onclick="likeComment(${comment.id})">Like</button>
-      <button class="delete-btn" onclick="deleteComment(${comment.id})">Dislike</button>
+      <div class="comment-actions">
+      <button class="like-btn">👍🏽</button>
+      <button class="like-btn">👎🏽</button>
+      </div>
     </div>
   `;
-  
+  likeEventOnComment(commentElement)
   return commentElement;
 }

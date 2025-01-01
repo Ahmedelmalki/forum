@@ -3,13 +3,14 @@ package forum
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
-
-
 func CreateComment(db *sql.DB) http.HandlerFunc {
+	fmt.Println("CreateComment called")
 	return func(w http.ResponseWriter, r *http.Request) {
 		userID, authenticated := ValidateCookie(db, w, r)
 		if authenticated != nil {
@@ -78,6 +79,6 @@ func GetComments(db *sql.DB) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(comments)
-		// fmt.Print("\n", json.NewEncoder(os.Stdout).Encode(comments))
+		fmt.Print("\n", json.NewEncoder(os.Stdout).Encode(comments))
 	}
 }
