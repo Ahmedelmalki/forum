@@ -12,6 +12,7 @@ type likes struct {
 	Post_Id      int    `json:"PostId"`
 	LikeCOunt    int    `json:"LikeCOunt"`
 	DislikeCOunt int    `json:"DislikeCOunt"`
+	CommentId    int    `json:"CommentId"`
 	Type         string `json:"Type"`
 }
 
@@ -20,7 +21,10 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
-
+		target := "post"
+		if like.CommentId != -1 {
+			target = "comment"
+		}
 		switch r.Method {
 		case http.MethodPost:
 			{
@@ -36,12 +40,14 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 					http.Redirect(w, r, "/", http.StatusSeeOther)
 					return
 				}
-				like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, like.Type)
+
+				like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, like.Type, target)
 				if err != nil {
 					http.Error(w, "Error counting likes", http.StatusInternalServerError)
 					return
 				}
-				checkQuery := "SELECT EXISTS(SELECT 1 FROM likes WHERE post_id = ? AND user_id = ?)"
+				checkQuery := fmt.Sprintf(`SELECT EXISTS(SELECT 1 FROM likes WHERE %s_id = ? AND user_id = ?)`, target)
+
 				var exists bool
 				err = db.QueryRow(checkQuery, like.Post_Id, like.User_Id).Scan(&exists)
 				if err != nil {
@@ -50,18 +56,20 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 				}
 
 				if exists {
-					LiketypeQuery := "SELECT TypeOfLike FROM likes WHERE post_id = ? AND user_id = ?"
+					//  "SELECT TypeOfLike FROM likes WHERE post_id = ? AND user_id = ?"
+					LiketypeQuery := fmt.Sprintf(`SELECT TypeOfLike FROM likes WHERE %s_id = ? AND user_id = ?`, target)
 					var typea string
 					db.QueryRow(LiketypeQuery, like.Post_Id, like.User_Id).Scan(&typea)
 					if typea == like.Type {
-						query := "DELETE FROM likes WHERE post_id = ? AND user_id = ?"
+						query := fmt.Sprintf(`DELETE FROM likes WHERE %s_id = ? AND user_id = ?`, target)
+						// query := "DELETE FROM likes WHERE post_id = ? AND user_id = ?"
 						_, err = db.Exec(query, like.Post_Id, like.User_Id)
 						if err != nil {
 							http.Error(w, "Error deleting like", http.StatusInternalServerError)
 							return
 						}
 					} else {
-						Updatequery := "UPDATE likes SET TypeOfLike = ? WHERE post_id = ? AND user_id = ?"
+						Updatequery := fmt.Sprintf(`UPDATE likes SET TypeOfLike = ? WHERE %s_id = ? AND user_id = ?`, target)
 						_, err = db.Exec(Updatequery, like.Type, like.Post_Id, like.User_Id)
 						if err != nil {
 							http.Error(w, "Error UPDATNG likeS", http.StatusInternalServerError)
@@ -69,9 +77,12 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 						}
 					}
 				} else {
-					query := "INSERT INTO likes (user_id, post_id , TypeOfLike) VALUES (?, ?, ?)"
-					_, err = db.Exec(query, like.User_Id, like.Post_Id, like.Type)
+					if target == "post" {
+					}
+					query := "INSERT INTO likes (user_id, post_id , comment_id , TypeOfLike) VALUES (?, ?, ?, ?)"
+					_, err = db.Exec(query, like.User_Id, like.Post_Id, like.CommentId, like.Type)
 					if err != nil {
+						fmt.Println(err)
 						http.Error(w, "Error adding like", http.StatusInternalServerError)
 						return
 					}
@@ -86,12 +97,12 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 						http.Error(w, "No Active Session", http.StatusInternalServerError)
 						return
 					}
-					like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, "like")
+					like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, "like", target)
 					if err != nil {
 						http.Error(w, "Error Counting like", http.StatusInternalServerError)
 						return
 					}
-					like.DislikeCOunt, err = countLikesForPost(db, like.Post_Id, "dislike")
+					like.DislikeCOunt, err = countLikesForPost(db, like.Post_Id, "dislike", target)
 					if err != nil {
 						http.Error(w, "Error Counting dislike", http.StatusInternalServerError)
 						return
@@ -99,7 +110,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 					w.Header().Set("Content-Type", "application/json")
 					json.NewEncoder(w).Encode(&like)
 					fmt.Println("heeeeeeere")
-					fmt.Println(like)
+					fmt.Println(target)
 				}
 			}
 
@@ -112,8 +123,12 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-func countLikesForPost(db *sql.DB, postID int, liketype string) (int, error) {
-	query := "SELECT COUNT(*) FROM likes WHERE post_id = ? AND TypeOfLike = ? "
+func countLikesForPost(db *sql.DB, postID int, liketype string, target string) (int, error) {
+	adding := ""
+	if target == "post" {
+		adding = "AND comment_id = -1"
+	}
+	query := fmt.Sprintf(`SELECT COUNT(*) FROM likes WHERE %s_id = ? AND TypeOfLike = ? %s`, target, adding)
 	var likeCount int
 	err := db.QueryRow(query, postID, liketype).Scan(&likeCount)
 	if err != nil {

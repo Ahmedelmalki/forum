@@ -169,8 +169,8 @@ func main() {
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 
-	fmt.Println("Server is running on http://localhost:8765")
-	log.Fatal(http.ListenAndServe(":8765", nil))
+	fmt.Println("Server is running on http://localhost:9898")
+	log.Fatal(http.ListenAndServe(":9898", nil))
 }
 
 func CategoryHandler(db *sql.DB) http.HandlerFunc {

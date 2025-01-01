@@ -62,16 +62,17 @@ async function loadComments(postId) {
           <small>Posted by <b>@${comment.username}</b>, ${timeAgo(
         comment.created_at
       )}</small>
+      
           <p>${escapeHTML(comment.content)}</p>
-          <button class="like-btn" onclick="likeComment(${
-            comment.id
-          })">Like</button>
-          <button class="delete-btn" onclick="deleteComment(${
-            comment.id
-          })">Dislike</button>
+         <div class="comment-actions">
+          <button class="comment-btn like">Like</button>
+          <div class="comment-likes like">${escapeHTML(comment.Likes)} </div>
+          <button class="comment-btn dislike">Dislike</button>
+          <div class="comment-dislikes">${escapeHTML(comment.Dislikes)} </div>
+              </div>
         </div>
       `;
-
+      likeEvent(commentElement, comment.id , postId);
       commentsList.appendChild(commentElement);
     });
   } catch (error) {

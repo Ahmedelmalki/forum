@@ -3,11 +3,10 @@ package forum
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
-
-
 
 func CreateComment(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -71,6 +70,19 @@ func GetComments(db *sql.DB) http.HandlerFunc {
 			err := rows.Scan(&comment.ID, &comment.UserID, &comment.UserName, &comment.Content, &comment.CreatedAt)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			comment.Likes, err = countLikesForPost(db, comment.ID, "like", "comment")
+			if err != nil {
+				fmt.Println("hgfjlgjkdfgkjdf")
+				http.Error(w, "Error Counting likes", http.StatusInternalServerError)
+				return
+			}
+			comment.Dislikes, err = countLikesForPost(db, comment.ID, "dislike", "comment")
+			if err != nil {
+				fmt.Println("hgfjlgjkdfgkjdf")
+
+				http.Error(w, "Error Counting dislikes", http.StatusInternalServerError)
 				return
 			}
 			comments = append(comments, comment)
