@@ -40,6 +40,10 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.Error(w, "not found !", 404)
+			return
+		}
 		http.ServeFile(w, r, "static/templates/posts.html")
 	})
 
