@@ -65,7 +65,7 @@ export async function fetchPosts(category = "all") {
          <div class="meta hidden">
           ${escapeHTML(post.Category)}, ${timeAgo(post.CreatedAt).toLocaleString()}
         </div>
-         <div class="post-actions">
+        <div class="post-actions">
           <button class="post-btn like" style="background:none;" id="${post.ID}">❤️</button>
           <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
           <button class="post-btn dislike", style="background:none;"  id = ${post.ID}>👎</button>

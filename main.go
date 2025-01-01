@@ -51,8 +51,11 @@ func main() {
 
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
-	// likes
+	// likes on posts
 	http.HandleFunc("/like", forum.HandleLikes(db))
+
+	// likes on comments
+	http.HandleFunc("/comment-reactions", forum.HandleCommentReactions(db))
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "static/templates/login.html")
