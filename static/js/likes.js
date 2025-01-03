@@ -10,10 +10,10 @@ async function UpdateLike(post , classNm) {
     console.log("LIkes fetched successfully");
     post.querySelector(
       `.${classNm}-actions .${classNm}-likes`
-    ).textContent = `${likes.LikeCOunt} likes`;
+    ).textContent = `${likes.LikeCOunt}  `;
     post.querySelector(
       `.${classNm}-actions .${classNm}-dislikes`
-    ).textContent = `${likes.DislikeCOunt} dislikes`;
+    ).textContent = `${likes.DislikeCOunt} `;
   } catch (err) {
     console.error("Error fetching likes:", err);
   }

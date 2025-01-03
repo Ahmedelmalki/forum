@@ -17,12 +17,12 @@ func FetchPosts(db *sql.DB, category string) ([]Post, error) {
 					p.created_at,
 					COALESCE(
 						(SELECT COUNT(*) FROM likes
-						WHERE post_id = p.id AND typeOfLike = 'like'),
+						WHERE post_id = p.id AND typeOfLike = 'like' AND comment_id = -1),
 						0
 						) as likes,
             		COALESCE(
                 		(SELECT COUNT(*) FROM likes 
-                		WHERE post_id = p.id AND TypeOfLike = 'dislike'),
+                		WHERE post_id = p.id AND TypeOfLike = 'dislike' AND comment_id = -1),
                 		0
             			) as dislikes
 			 	FROM posts p
@@ -82,9 +82,9 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		/* this line sets an HTTP response header to control how the response 
+		/* this line sets an HTTP response header to control how the response
 		is cached by clients (browsers) and intermediate caches (proxies).*/
-		 w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Cache-Control", "no-cache")
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
 			http.Error(w, "error encoding response", http.StatusInternalServerError)
 		}

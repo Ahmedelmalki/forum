@@ -65,10 +65,10 @@ async function loadComments(postId) {
       
           <p>${escapeHTML(comment.content)}</p>
          <div class="comment-actions">
-          <button class="comment-btn like">Like</button>
-          <div class="comment-likes like">${escapeHTML(comment.Likes)} </div>
-          <button class="comment-btn dislike">Dislike</button>
-          <div class="comment-dislikes">${escapeHTML(comment.Dislikes)} </div>
+          <button class="comment-btn like">❤️</button>
+          <div class="comment-likes like">${(comment.Likes)} </div>
+          <button class="comment-btn dislike">👎</button>
+          <div class="comment-dislikes">${(comment.Dislikes)}  </div>
               </div>
         </div>
       `;
