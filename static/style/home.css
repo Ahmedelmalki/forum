@@ -29,6 +29,11 @@ b {
 small {
   color: rebeccapurple;
 }
+.title {
+  text-align: center;
+  border: 1px solid;
+  padding: 1px;
+}
 .post-username {
   background-color: black;
   color: #fff;
@@ -132,7 +137,62 @@ h2 {
   float: left;
 
 }
+/*styling the likes and dislike*/
+/* General Button Styling */
+.post-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Adjust to the size of the icon */
+  height: 30px; /* Adjust to the size of the icon */
+  cursor: pointer;
+  font-size: 18px; /* Size of the icon */
+  color: inherit; /* Ensures it matches the parent color */
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
 
+/* Hover Effect */
+.post-btn:hover {
+  transform: scale(1.7); 
+  color: #070707;
+  border-radius: 50%; 
+}
+/* Like and Dislike Buttons */
+.like {
+  color: grey /* Like icon color */
+}
+
+.dislike {
+  color: grey /* Dislike icon color */
+}
+
+/* Post Actions Container */
+.post-actions {
+  display:  ruby;
+  align-items: center;
+  gap: 10px; /* Spacing between icons and counters */
+
+}
+
+/* Counter Styling */
+.post-likes, .post-dislikes {
+  font-size: 14px;
+  color: black;
+}
+
+
+/* #filter-form {
+  margin-right: auto;
+}
+#filter-toggle{
+  margin-right: auto;
+  text-align: center;
+  width: 10%;
+} */
 .post-card {
   margin-top: 1rem;
   padding: 1rem;
@@ -194,10 +254,7 @@ h2 {
   font-size: 14px;
   
 }
-.post-actions {
-  background-color: white;
-  opacity: 0.9;
-}
+
 .send-comment-btn:hover {
   background-color: #555;
 }

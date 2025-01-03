@@ -9,11 +9,19 @@ async function UpdateLike(post , classNm) {
     const likes = await response.json();
     console.log("LIkes fetched successfully");
     post.querySelector(
+<<<<<<< HEAD
       `.${classNm}-actions .${classNm}-likes`
     ).textContent = `${likes.LikeCOunt}  `;
     post.querySelector(
       `.${classNm}-actions .${classNm}-dislikes`
     ).textContent = `${likes.DislikeCOunt} `;
+=======
+      ".post-actions .post-likes"
+    ).textContent = `${likes.LikeCOunt}`;
+    post.querySelector(
+      ".post-actions .post-dislikes"
+    ).textContent = `${likes.DislikeCOunt}`;
+>>>>>>> style
   } catch (err) {
     console.error("Error fetching likes:", err);
   }
