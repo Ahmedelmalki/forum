@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -117,7 +116,6 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(user_id, cookie)
 		fmt.Printf("%s logged in successfully!\n", email)
 	}
 }
@@ -125,59 +123,6 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 func GetNewPostHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./static/newPost.html")
-	}
-}
-
-func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		err := r.ParseForm()
-		if err != nil {
-			http.Error(w, "Unable to parse form data", http.StatusBadRequest)
-			return
-		}
-		cookie, err := r.Cookie("forum_session")
-		if err != nil {
-			return
-		}
-		var idForUsername int
-		// stupid misstake : i was slecting id instad of user_id which is linked to the users table
-		query1 := `SELECT user_id FROM sessions WHERE session= ?;`
-		err = db.QueryRow(query1, cookie.Value).Scan(&idForUsername)
-		fmt.Println(idForUsername)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		var userName string
-		query2 := `SELECT username FROM users WHERE id= ?`
-		err = db.QueryRow(query2, idForUsername).Scan(&userName)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Print(userName)
-
-		title := r.FormValue("title")
-		category := r.FormValue("category")
-		content := r.FormValue("content")
-		if title == "" || category == "" || content == "" {
-			http.Error(w, "All fields are required", http.StatusBadRequest)
-			return
-		}
-		if len(title) > 50 || len(content) > 1000 {
-			http.Error(w, "don't miss with the html plz", http.StatusBadRequest)
-			return
-		}
-
-		query := "INSERT INTO posts (username, title, category, content) VALUES (?, ?, ?, ?)"
-		_, err = db.Exec(query, userName, title, category, content)
-		if err != nil {
-			log.Printf("Error adding post: %v", err)
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
-
-		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
@@ -215,25 +160,66 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-func CategoryHandler(db *sql.DB) http.HandlerFunc {
+func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Parse the template file
-		tmpl, err := template.ParseFiles("static/templates/category.html")
+		err := r.ParseForm()
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			http.Error(w, "Unable to parse form data", http.StatusBadRequest)
+			return
+		}
+		cookie, err := r.Cookie("forum_session")
+		if err != nil {
+			http.Error(w, "Unauthorized to create a post", http.StatusUnauthorized)
+			return
+		}
+		var idForUsername int
+		err = db.QueryRow(`SELECT user_id FROM sessions WHERE session= ?;`, cookie.Value).Scan(&idForUsername)
+		fmt.Println(idForUsername)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		var userName string
+		err = db.QueryRow(`SELECT username FROM users WHERE id= ?`, idForUsername).Scan(&userName)
+		if err != nil {
+			fmt.Println(err)
 			return
 		}
 
-		// Create a data structure to pass to the template
-		data := map[string]interface{}{
-			"Category": r.URL.Query().Get("category"), // Optional: current category
-			"RawQuery": r.URL.RawQuery,                // Full raw query string
+		title := r.FormValue("title")
+		content := r.FormValue("content")
+		categories := r.Form["categories[]"]
+		if title == "" || len(categories) == 0 || content == "" {
+			http.Error(w, "All fields are required", http.StatusBadRequest)
+			return
 		}
-		fmt.Println(data)
-		// Execute the template with the data
-		err = tmpl.Execute(w, data)
+		if len(title) > 50 || len(content) > 1000 {
+			http.Error(w, "don't miss with the html plz", http.StatusBadRequest)
+			return
+		}
+
+		tx, err := db.Begin() // starting a transaction
 		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			log.Fatal(err)
 		}
+		defer tx.Rollback()
+		// inserting into posts
+		result, err := tx.Exec("INSERT INTO posts (username, title, content) VALUES (?, ?, ?)", userName, title, content)
+		if err != nil {
+			return
+		}
+		postID, err := result.LastInsertId()
+		if err != nil {
+			return
+		}
+		for _, category := range categories {
+			_, err = tx.Exec("INSERT INTO categories (post_id, categories) VALUES (?, ?)", postID, category)
+			if err != nil {
+				return
+			}
+		}
+		tx.Commit()
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

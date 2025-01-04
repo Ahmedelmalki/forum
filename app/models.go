@@ -14,14 +14,14 @@ type LoginCredentials struct {
 }
 
 type Post struct {
-	ID        int
-	UserName  string
-	Title     string
-	Content   string
-	Category  string
-	Likes     int
-	Dislikes  int
-	CreatedAt time.Time
+	ID         int      `json:"Id"`
+	UserName   string   `json:"Username"`
+	Title      string   `json:"Title"`
+	Content    string   `json:"Content"`
+	Categories []string `json:"Categories"`
+	CreatedAt  string   `json:"Created_at"`
+	Likes      int      `json:"Likes"`
+	Dislikes   int      `json:"Dislikes"`
 }
 
 type Comment struct {

@@ -19,12 +19,20 @@
       <label for="content">Content:</label>
       <textarea id="content" maxlength="1000" name="content" rows="5" required></textarea>
 
-      <label for="category">Category:</label>
-      <select name="category" id="category" required>
-        <option value="tech">Tech</option>
-        <option value="science">Science</option>
-        <option value="sport">Sport</option>
-      </select>
+      <!-- we change it to check box so the user can chose one or more categories -->
+        <label>Categories:</label>
+        <div>
+          <input type="checkbox" name="categories[]" value="tech" id="category-tech" />
+          <label for="category-tech">Tech</label>
+        </div>
+        <div>
+          <input type="checkbox" name="categories[]" value="science" id="category-science" />
+          <label for="category-science">Science</label>
+        </div>
+        <div>
+          <input type="checkbox" name="categories[]" value="sport" id="category-sport" />
+          <label for="category-sport">Sport</label>
+        </div>
 
       <button type="submit" id="createPostButton" class="create-post">Create Post</button>
       <button type="button" class="btn back-btn" onclick="window.location.href='/'">Back to Home</button>
