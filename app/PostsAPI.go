@@ -4,11 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strings"
 )
-
 
 func FetchPosts(db *sql.DB, category string) ([]Post, error) {
 	baseQuery := `
@@ -122,21 +120,64 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 
 func CategoryHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.ParseFiles("static/templates/category.html")
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		categories := r.URL.Query()["categories[]"] // Extract categories[] parameter from the query string
+
+		// If no categories are selected, return an error or handle it as "all"
+		if len(categories) == 0 {
+			http.Error(w, "No categories provided", http.StatusBadRequest)
 			return
 		}
 
-		data := map[string]interface{}{
-			"Category": r.URL.Query().Get("category"),
-			"RawQuery": r.URL.RawQuery,
+		// Construct a dynamic SQL query for SQLite
+		query := `SELECT 
+    p.id, 
+    p.username, 
+    p.title, 
+    p.content, 
+    p.created_at,
+	c.categories
+FROM 
+    posts AS p
+INNER JOIN 
+    categories AS c 
+ON 
+    c.post_id = p.id
+WHERE 
+    c.categories = ?;
+						`
+		var posts []Post
+		for _, c := range categories {
+			rows, err := db.Query(query, c)
+			if err != nil {
+				http.Error(w, "Failed to query posts: "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer rows.Close()
+
+			// Parse the rows into a slice of Post structs
+			for rows.Next() {
+				var post Post
+				var category string
+
+				// Adjust the scan fields to match your database schema
+				err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &category, &post.CreatedAt)
+				if err != nil {
+					http.Error(w, "Failed to parse posts: "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				// Split the category string into an array if it's stored as a comma-separated value
+				post.Categories = strings.Split(category, ",")
+				posts = append(posts, post)
+			}
+			if err := rows.Err(); err != nil {
+				http.Error(w, "Error reading posts: "+err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
-		fmt.Println(data)
-		err = tmpl.Execute(w, data)
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(posts); err != nil {
+			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
 		}
 	}
 }
-
