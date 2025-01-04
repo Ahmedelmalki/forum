@@ -3,7 +3,6 @@ package forum
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -68,6 +67,5 @@ func isLoged(db *sql.DB, r *http.Request) int {
 			user_id = 0
 		}
 	}
-	fmt.Println("####", user_id)
 	return user_id
 }

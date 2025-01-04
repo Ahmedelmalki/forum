@@ -95,17 +95,6 @@ export async function fetchPosts(category = "all") {
   }
 }
 
-// entry point
-// document.addEventListener("DOMContentLoaded", () => {
-//   //document.getElementById("apply-filter").click();
-//   fetchPosts('all');
-//   // filtring logic
-//   document.getElementById("apply-filter").addEventListener("click", () => {
-//     const category = document.getElementById("category-filter").value;
-//     fetchPosts(category);
-//   });
-// });
-
 export function toggleComments(postId, button) {
   const commentSection = document.getElementById(`comment-section-${postId}`);
   console.log("Button clicked:", button.textContent);
@@ -118,7 +107,7 @@ export function toggleComments(postId, button) {
     console.log("Showing comments for post:", postId);
     commentSection.classList.remove("hidden");
     button.textContent = "Hide Comments";
-    loadComments(postId); // Fetch and display comments
+    loadComments(postId);
   } else {
     console.log("Hiding comments for post:", postId);
     commentSection.classList.add("hidden");
@@ -127,8 +116,8 @@ export function toggleComments(postId, button) {
 }
 
 export function toggleDetails(toggleElement) {
-  const meta = toggleElement.nextElementSibling; // Select the `.meta` div
-  meta.classList.toggle("hidden"); // Toggle the `hidden` class
+  const meta = toggleElement.nextElementSibling; 
+  meta.classList.toggle("hidden");
 
   const detailsText = toggleElement.querySelector(".details-text");
   detailsText.textContent = meta.classList.contains("hidden")
@@ -152,7 +141,6 @@ export function escapeHTML(str) {
   );
 }
 
-//window.onload = fetchPosts;
 window.escapeHTML = escapeHTML;
 window.fetchPosts = fetchPosts;
 window.toggleComments = toggleComments;

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -102,14 +103,14 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		//handling one session at a time
-        deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
-        _, err = db.Exec(deleteQuery, user_id)
-        if err != nil {
-            http.Error(w, "Error cleaning old sessions", http.StatusInternalServerError)
-            return
-        }
-		
+		// handling one session at a time
+		deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
+		_, err = db.Exec(deleteQuery, user_id)
+		if err != nil {
+			http.Error(w, "Error cleaning old sessions", http.StatusInternalServerError)
+			return
+		}
+
 		cookie := CookieMaker(w)
 		err = InsretCookie(db, user_id, cookie, time.Now().Add(time.Hour*24))
 		if err != nil {
@@ -211,5 +212,28 @@ func LogOutHandler(db *sql.DB) http.HandlerFunc {
 		})
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
+func CategoryHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Parse the template file
+		tmpl, err := template.ParseFiles("static/templates/category.html")
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		// Create a data structure to pass to the template
+		data := map[string]interface{}{
+			"Category": r.URL.Query().Get("category"), // Optional: current category
+			"RawQuery": r.URL.RawQuery,                // Full raw query string
+		}
+		fmt.Println(data)
+		// Execute the template with the data
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		}
 	}
 }

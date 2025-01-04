@@ -90,6 +90,5 @@ func GetComments(db *sql.DB) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(comments)
-		// fmt.Print("\n", json.NewEncoder(os.Stdout).Encode(comments))
 	}
 }

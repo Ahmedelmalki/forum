@@ -37,9 +37,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 					http.Error(w, "Invalid JSON", http.StatusBadRequest)
 					return
 				}
-				fmt.Println(target)
 				like.User_Id, err = ValidateCookie(db, w, r)
-				// fmt.Println("User id  now:",like.User_Id)
 				if err != nil {
 					http.Redirect(w, r, "/", http.StatusSeeOther)
 					return
@@ -113,8 +111,6 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 					}
 					w.Header().Set("Content-Type", "application/json")
 					json.NewEncoder(w).Encode(&like)
-					fmt.Println("heeeeeeere")
-					fmt.Println(target)
 				}
 			}
 
@@ -129,7 +125,6 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 
 func countLikesForPost(db *sql.DB, postID int, CommentId int, liketype string, target string) (int, error) {
 	query := `SELECT COUNT(*) FROM likes WHERE post_id = ? AND comment_id = ? AND TypeOfLike = ? `
-	fmt.Println(query)
 	var likeCount int
 	err := db.QueryRow(query, postID, CommentId, liketype).Scan(&likeCount)
 	if err != nil {

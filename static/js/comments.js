@@ -80,6 +80,3 @@ async function loadComments(postId) {
   }
 }
 /*************End Comment sections functions*****************/
-
-// Load posts when the page loads
-//window.onload = fetchPosts;
