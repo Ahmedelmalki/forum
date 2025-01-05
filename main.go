@@ -106,7 +106,16 @@ func main() {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
-	http.Handle("/category", forum.CategoryHandler(db))
+	http.HandleFunc("/category", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			forum.Postcategory(db)(w, r)
+			return
+		}
+		if r.Method == "POST" {
+			forum.CategoryHandler(db)(w, r)
+			return
+		}
+	})
 
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))

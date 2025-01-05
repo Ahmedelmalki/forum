@@ -10,17 +10,12 @@
     <a href="/"> <button>back</button></a>
     <div id="posts"></div>
 
+    <script src="/static/js/fetchPosts.js"></script>
     <script src="/static/js/comments.js"></script>
     <script src="/static/js/likes.js"></script>
     <script type="module">
       import { fetchPosts } from "/static/js/fetchPosts.js";
-
-      // Injected from Go handler via template
-      const query = `{{ .Category}}`;
-      console.log(`Query: ${query}`);
-
-      // Use the fetchPosts function to process the query
-      await fetchPosts(query);
+      fetchPosts("category");
     </script>
   </body>
 </html>

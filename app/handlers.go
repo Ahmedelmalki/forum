@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -221,5 +223,74 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		tx.Commit()
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+}
+
+func CategoryHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		categories := r.URL.Query()["categories"] // Extract categories[] parameter from the query string
+		fmt.Println(categories)
+
+		if len(categories) == 0 {
+			http.Error(w, "No categories provided", http.StatusBadRequest)
+			return
+		}
+		query := `SELECT 
+					    p.id, 
+					    p.username, 
+					    p.title, 
+					    p.content, 
+					    p.created_at,
+						c.categories
+					FROM 
+					    posts AS p
+					INNER JOIN 
+					    categories AS c 
+					ON 
+					    c.post_id = p.id
+					WHERE 
+					    c.categories = ?;
+						`
+		var posts []Post
+		for _, c := range categories {
+			rows, err := db.Query(query, c)
+			if err != nil {
+				http.Error(w, "Failed to query posts: "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var post Post
+				var category string
+
+				err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category)
+				if err != nil {
+					http.Error(w, "Failed to parse posts: "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				post.Categories = strings.Split(category, ",")
+				posts = append(posts, post)
+			}
+			if err := rows.Err(); err != nil {
+				http.Error(w, "Error reading posts: "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+		user_id := isLoged(db, r)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
+			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+func Postcategory(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		template, err := template.ParseFiles("static/templates/category.html")
+		if err != nil {
+			http.Error(w, "internal", 500)
+		}
+		template.Execute(w, nil)
 	}
 }

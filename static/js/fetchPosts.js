@@ -1,13 +1,41 @@
 // Fetch posts from the API and render them
-export async function fetchPosts(category = "all") {
+export async function fetchPosts(type) {
   try {
-    const url = category === "all" ? "/posts" : `/posts?category=${encodeURIComponent(category)}`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+    let posts = null;
+    if (type === "posts") {
+      const response = await fetch(`/${type}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-    const posts = await response.json();
+      posts = await response.json();
+    } else {
+      const currentUrl = window.location.href;
+      const url = new URL(currentUrl);
+      const params = url.searchParams;
+      const category = params.getAll("categories");
+      // console.log(category);
+
+      let link = `/${type}?`;
+      category.forEach((element, index) => {
+        link += `categories=` + element;
+        if (index < category.length - 1) {
+          link += "&";
+        }
+      });
+
+      const response = await fetch(link, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Ensure headers match the server's expectations
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      posts = await response.json();
+    }
 
     const postsContainer = document.getElementById("posts");
     postsContainer.innerHTML = ""; // Clear any existing content
@@ -60,18 +88,34 @@ export async function fetchPosts(category = "all") {
            <span class="details-text">Details</span>
         </div>
         <div class="meta hidden">
-        ${post.Categories.join(', ')}, ${timeAgo(post.CreatedAt).toLocaleString()}
+        ${post.Categories.join(", ")}, ${timeAgo(
+        post.CreatedAt
+      ).toLocaleString()}
         </div>
          <div class="post-actions">
-          <button class="post-btn like" style="background:none;" id="${post.Id}">❤️</button>
-          <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
-          <button class="post-btn dislike", style="background:none;"  id = ${post.ID}>👎</button>
-          <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
+          <button class="post-btn like" style="background:none;" id="${
+            post.Id
+          }">❤️</button>
+          <div class="post-likes like">${escapeHTML(
+            post.Likes.toString()
+          )} </div>
+          <button class="post-btn dislike", style="background:none;"  id = ${
+            post.ID
+          }>👎</button>
+          <div class="post-dislikes" >${escapeHTML(
+            post.Dislikes.toString()
+          )} </div>
         </div>
-         <button class="comment-btn" onclick="toggleComments(${post.Id}, this)">Show Comments</button>
+         <button class="comment-btn" onclick="toggleComments(${
+           post.Id
+         }, this)">Show Comments</button>
         <div class="comment-section hidden" id="comment-section-${post.Id}">
-          <textarea class="comment-input" id="comment-input-${post.Id}" placeholder="Your comment"></textarea>
-          <button class="send-comment-btn" onclick="postComment(${post.Id}, 1)">Comment</button>
+          <textarea class="comment-input" id="comment-input-${
+            post.Id
+          }" placeholder="Your comment"></textarea>
+          <button class="send-comment-btn" onclick="postComment(${
+            post.Id
+          }, 1)">Comment</button>
           <div id="comments-list-${post.Id}" class="comments-list"></div>
 
       `;
@@ -113,7 +157,7 @@ export function toggleComments(postId, button) {
 }
 
 export function toggleDetails(toggleElement) {
-  const meta = toggleElement.nextElementSibling; 
+  const meta = toggleElement.nextElementSibling;
   meta.classList.toggle("hidden");
 
   const detailsText = toggleElement.querySelector(".details-text");

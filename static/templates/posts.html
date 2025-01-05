@@ -24,24 +24,25 @@
       </div>
 
        <!-- Filter Dropdown -->
-    <form id="filter-form" action="/category">
+    <form id="filter-form" action="/category" method="GET">
       <label for="category-filter">Filter by Category:</label>
       <div>
-        <input type="checkbox" name="categories[]" value="tech" id="category-tech" />
+        <input type="checkbox" name="categories" value="tech" id="category-tech" />
         <label for="category-tech">Tech</label>
       </div>
       <div>
-        <input type="checkbox" name="categories[]" value="science" id="category-science" />
+        <input type="checkbox" name="categories" value="science" id="category-science" />
         <label for="category-science">Science</label>
       </div>
       <div>
-        <input type="checkbox" name="categories[]" value="sport" id="category-sport" />
+        <input type="checkbox" name="categories" value="sport" id="category-sport" />
         <label for="category-sport">Sport</label>
       </div>
       <button type="submit" id="apply-filter">Apply</button>
     </form>
 
       <div id="posts"></div>
+
     </div>
 
     <script src="/static/js/fetchPosts.js"></script>
@@ -49,7 +50,7 @@
       <script src="/static/js/likes.js"></script>
       <script type="module">
         import {fetchPosts , toggleComments, toggleDetails} from "/static/js/fetchPosts.js"
-        fetchPosts();
+        fetchPosts("posts");
       </script>
     
   </body>
