@@ -174,7 +174,6 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		}
 		var idForUsername int
 		err = db.QueryRow(`SELECT user_id FROM sessions WHERE session= ?;`, cookie.Value).Scan(&idForUsername)
-		fmt.Println(idForUsername)
 		if err != nil {
 			fmt.Println(err)
 			return

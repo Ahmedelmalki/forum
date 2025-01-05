@@ -3,6 +3,7 @@ package forum
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -120,8 +121,9 @@ func countLikesForPost(db *sql.DB, postID int, CommentId int, liketype string, t
 	query := `SELECT COUNT(*) FROM likes WHERE post_id = ? AND comment_id = ? AND TypeOfLike = ? `
 	var likeCount int
 	err := db.QueryRow(query, postID, CommentId, liketype).Scan(&likeCount)
+	fmt.Println("########\n",likeCount,"\n#######")
 	if err != nil {
-		return 0, err
+		return 0, errors.New("error counting likes")
 	}
 
 	return likeCount, nil

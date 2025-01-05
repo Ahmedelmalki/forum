@@ -2,8 +2,8 @@
 export async function fetchPosts(type) {
   try {
     let posts = null;
-    if (type === "posts" || type === "LikedPosts") {
-      if (type == "LikedPosts") {
+    if (type === "posts" || type === "LikedPosts" || type === "CtreatedBy") {
+      if (type == "LikedPosts" || type === "CtreatedBy") {
         const response = await fetch(`/${type}`, {
           method: "POST",
         });

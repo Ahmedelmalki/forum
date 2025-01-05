@@ -61,16 +61,7 @@ func FetchPosts(db *sql.DB, category string) ([]Post, error) {
 	for rows.Next() {
 		var post Post
 		var categoryString string
-		err := rows.Scan(
-			&post.ID,
-			&post.UserName,
-			&post.Title,
-			&post.Content,
-			&categoryString,
-			&post.CreatedAt,
-			&post.Likes,
-			&post.Dislikes,
-		)
+		err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &categoryString, &post.CreatedAt, &post.Likes, &post.Dislikes)
 		if err != nil {
 			fmt.Printf("error scanning: %v\n", err)
 			continue

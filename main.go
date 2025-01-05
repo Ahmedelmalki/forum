@@ -132,6 +132,20 @@ func main() {
 			return
 		}
 	})
+
+	//filtering by created posts
+	http.HandleFunc("/CtreatedBy", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			forum.PostPostsCreatedBy(db)(w, r)
+			fmt.Println("==================\n calling PostPostsCreatedBy")
+			return
+		}
+		if r.Method == "POST" {
+			forum.GetPostsCreatedBy(db)(w, r)
+			return
+		}
+	})
+
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 

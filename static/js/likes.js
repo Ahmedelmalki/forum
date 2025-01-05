@@ -2,12 +2,10 @@ async function UpdateLike(post , classNm) {
   try {
     console.log(post, classNm)
     const response = await fetch("/like");
-    console.log("Fetching done");
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const likes = await response.json();
-    console.log("LIkes fetched successfully");
     post.querySelector(
       `.${classNm}-actions .${classNm}-likes`
     ).textContent = `${likes.LikeCOunt}  `;
@@ -25,9 +23,7 @@ function likeEvent(post, commentId, postId) {
   }
   
   likeButton = post.querySelectorAll(`.${clss}-actions .${clss}-btn`);
-  console.log(clss, likeButton, "hjsdkfjdshkjf");
 
-  // console.log(likeButton);
   if (window.cookie == "") {
     likeButton.disabled = true;
     likeButton.style.backgroundcolor = "#a9a9a9";
@@ -69,4 +65,3 @@ function likeEvent(post, commentId, postId) {
     });
   }
 }
-// setInterval(()=>UpdateLike(post), 1000);

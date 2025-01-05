@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Created By</title>
+    <link rel="stylesheet" href="/static/style/home.css" />
+</head>
+    <body>
+        <a href="/"> <button>back</button></a>
+        <div id="posts"></div>
+    
+        <script src="/static/js/fetchPosts.js"></script>
+        <script src="/static/js/comments.js"></script>
+        <script src="/static/js/likes.js"></script>
+        <script type="module">
+            import { fetchPosts } from "/static/js/fetchPosts.js";
+            fetchPosts("CtreatedBy");
+        </script>
+    </body>
+</html>
