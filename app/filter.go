@@ -130,7 +130,7 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			return
 		}
 
-		//
+		fmt.Println("here")
 		user_id := isLoged(db, r)
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
@@ -144,7 +144,8 @@ func PostLikedPosts(db *sql.DB) http.HandlerFunc {
 		template, err := template.ParseFiles("static/templates/likedPosts.html")
 		if err != nil {
 			http.Error(w, "internal server error", 500)
-		}
+		} 
+		fmt.Println("========================\n here")
 		template.Execute(w, nil)
 	}
 }

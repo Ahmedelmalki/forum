@@ -15,6 +15,10 @@
       <a href="/login"  class="login-btn loged">login</a>
       <a href="/register" class="register-btn loged">register</a>
       <a href="/newPost" class="newPost-btn unloged">create new a post</a>
+      <!-- getting the html (if post u'll get the json)-->
+        <form action="/LikedPosts" method="GET">
+          <button type="submit" >Liked posts</button>
+        </form>
       <form action="/logout" method="POST">
         <button type="submit" class="log-out-btn unloged">Log Out</button>
       </form>

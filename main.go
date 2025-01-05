@@ -42,6 +42,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/"{
 			http.Error(w, "page not found", 404)
+			return
 		}
 		http.ServeFile(w, r, "static/templates/posts.html")
 	})
@@ -89,7 +90,6 @@ func main() {
 	})))
 
 	// Comments handling
-
 	http.HandleFunc("/comments", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
@@ -121,9 +121,10 @@ func main() {
 	})
 
 	//filtering by liked posts
-	http.HandleFunc("/liked", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/LikedPosts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			forum.PostLikedPosts(db)(w, r)
+			fmt.Println("calling PostLikedPosts")
 			return
 		}
 		if r.Method == "POST" {

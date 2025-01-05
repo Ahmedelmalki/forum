@@ -2,13 +2,24 @@
 export async function fetchPosts(type) {
   try {
     let posts = null;
-    if (type === "posts") {
-      const response = await fetch(`/${type}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    if (type === "posts" || type === "LikedPosts") {
+      if (type == "LikedPosts") {
+        const response = await fetch(`/${type}`, {
+          method: "POST",
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-      posts = await response.json();
+        posts = await response.json();
+      } else {
+        const response = await fetch(`/${type}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        posts = await response.json();
+      }
     } else {
       const currentUrl = window.location.href;
       const url = new URL(currentUrl);
@@ -26,7 +37,7 @@ export async function fetchPosts(type) {
       const response = await fetch(link, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", 
+          "Content-Type": "application/json",
         },
       });
 
