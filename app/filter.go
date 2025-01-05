@@ -10,70 +10,102 @@ import (
 	"strings"
 )
 
+// CategoryHandler handles the filtering of posts by category
 func CategoryHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		categories := r.URL.Query()["categories"] // Extract categories[] parameter from the query string
-		fmt.Println(categories)
-
+		// Extract categories from query parameters
+		categories := r.URL.Query()["categories"]
 		if len(categories) == 0 {
 			http.Error(w, "No categories provided", http.StatusBadRequest)
 			return
 		}
-		query := `SELECT 
-					    p.id, 
-					    p.username, 
-					    p.title, 
-					    p.content, 
-					    p.created_at,
-						c.categories
-					FROM 
-					    posts AS p
-					INNER JOIN 
-					    categories AS c 
-					ON 
-					    c.post_id = p.id
-					WHERE 
-					    c.categories = ?;
-						`
-		var posts []Post
-		for _, c := range categories {
-			rows, err := db.Query(query, c)
-			if err != nil {
-				http.Error(w, "Failed to query posts: "+err.Error(), http.StatusInternalServerError)
-				return
-			}
-			defer rows.Close()
-			for rows.Next() {
-				var post Post
-				var category string
 
-				err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category)
-				if err != nil {
-					http.Error(w, "Failed to parse posts: "+err.Error(), http.StatusInternalServerError)
-					return
-				}
+		fmt.Printf("Filtering posts by categories: %v\n", categories)
 
-				post.Categories = strings.Split(category, ",")
-				posts = append(posts, post)
-			}
-			if err := rows.Err(); err != nil {
-				http.Error(w, "Error reading posts: "+err.Error(), http.StatusInternalServerError)
-				return
-			}
+		// SQL query for filtering posts by categories
+		query := `
+		SELECT 
+			p.id, 
+			p.username, 
+			p.title, 
+			p.content, 
+			p.created_at, 
+			COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
+			COUNT(CASE WHEN l.TypeOfLike = 'like' THEN 1 ELSE NULL END) AS likes,
+			COUNT(CASE WHEN l.TypeOfLike = 'dislike' THEN 1 ELSE NULL END) AS dislikes
+		FROM 
+			posts AS p
+		LEFT JOIN 
+			categories AS c ON c.post_id = p.id
+		LEFT JOIN 
+			likes AS l ON l.post_id = p.id
+		WHERE 
+			c.categories IN (?` + strings.Repeat(", ?", len(categories)-1) + `)
+		GROUP BY 
+			p.id;
+		`
+
+		// Prepare the query with dynamic number of placeholders
+		args := make([]interface{}, len(categories))
+		for i, category := range categories {
+			args[i] = category
 		}
-		user_id := isLoged(db, r)
+
+		rows, err := db.Query(query, args...)
+		if err != nil {
+			http.Error(w, "Database query failed: "+err.Error(), http.StatusInternalServerError)
+			fmt.Printf("Error executing query: %v\n", err)
+			return
+		}
+		defer rows.Close()
+
+		var posts []Post
+		for rows.Next() {
+			var post Post
+			var categoryString string
+			err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &categoryString, &post.Likes, &post.Dislikes)
+			if err != nil {
+				http.Error(w, "Failed to parse posts: "+err.Error(), http.StatusInternalServerError)
+				fmt.Printf("Error scanning rows: %v\n", err)
+				return
+			}
+
+			if categoryString != "" {
+				post.Categories = strings.Split(categoryString, ",")
+			} else {
+				post.Categories = []string{}
+			}
+
+			posts = append(posts, post)
+		}
+
+		// Check for row iteration errors
+		if err := rows.Err(); err != nil {
+			http.Error(w, "Error iterating rows: "+err.Error(), http.StatusInternalServerError)
+			fmt.Printf("Error iterating rows: %v\n", err)
+			return
+		}
+
+		// Get the user ID for the current session
+		userID := isLoged(db, r)
+
+		// Send response
 		w.Header().Set("Content-Type", "application/json")
-		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
+		if err := json.NewEncoder(w).Encode([]any{posts, userID}); err != nil {
 			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
+			fmt.Printf("Error encoding response: %v\n", err)
 		}
 	}
 }
 
+// Postcategory renders the category selection page
 func Postcategory(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		template, err := template.ParseFiles("static/templates/category.html")
 		if err != nil {
-			http.Error(w, "internal server error", 500)
+			http.Error(w, "Internal server error: failed to load template", http.StatusInternalServerError)
+			fmt.Printf("Error loading template: %v\n", err)
+			return
 		}
 		template.Execute(w, nil)
 	}
@@ -136,7 +168,7 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Print("\n=============================\n",json.NewEncoder(os.Stdout).Encode([]any{posts, user_id}))
+		fmt.Print("\n=============================\n", json.NewEncoder(os.Stdout).Encode([]any{posts, user_id}))
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
 			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
 		}
