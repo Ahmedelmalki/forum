@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./db/cat2.db")
+	db, err := sql.Open("sqlite3", "./db/cat3.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
@@ -40,6 +40,9 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/"{
+			http.Error(w, "page not found", 404)
+		}
 		http.ServeFile(w, r, "static/templates/posts.html")
 	})
 
@@ -117,6 +120,17 @@ func main() {
 		}
 	})
 
+	//filtering by liked posts
+	http.HandleFunc("/liked", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			forum.PostLikedPosts(db)(w, r)
+			return
+		}
+		if r.Method == "POST" {
+			forum.GetLikedPosts(db)(w, r)
+			return
+		}
+	})
 	http.Handle("/static/style/", http.StripPrefix("/static/style/", http.FileServer(http.Dir("./static/style"))))
 	http.Handle("/static/js/", http.StripPrefix("/static/js/", http.FileServer(http.Dir("./static/js"))))
 

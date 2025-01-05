@@ -14,7 +14,6 @@ export async function fetchPosts(type) {
       const url = new URL(currentUrl);
       const params = url.searchParams;
       const category = params.getAll("categories");
-      // console.log(category);
 
       let link = `/${type}?`;
       category.forEach((element, index) => {
@@ -27,7 +26,7 @@ export async function fetchPosts(type) {
       const response = await fetch(link, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // Ensure headers match the server's expectations
+          "Content-Type": "application/json", 
         },
       });
 

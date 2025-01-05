@@ -7,17 +7,10 @@ import (
 	"net/http"
 )
 
-type likes struct {
-	User_Id      int    `json:"UserId"`
-	Post_Id      int    `json:"PostId"`
-	LikeCOunt    int    `json:"LikeCOunt"`
-	DislikeCOunt int    `json:"DislikeCOunt"`
-	CommentId    int    `json:"CommentId"`
-	Type         string `json:"Type"`
-}
+
 
 func HandleLikes(db *sql.DB) http.HandlerFunc {
-	var like likes
+	var like Likes
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
