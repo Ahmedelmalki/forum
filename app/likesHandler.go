@@ -21,6 +21,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 			targetId = like.CommentId
 
 		}
+		fmt.Println("targret :", target)
 		switch r.Method {
 		case http.MethodPost:
 			{

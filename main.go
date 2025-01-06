@@ -113,10 +113,11 @@ func main() {
 		if r.Method == "GET" {
 			forum.Postcategory(db)(w, r)
 			return
-		}
-		if r.Method == "POST" {
+		}else if r.Method == "POST" {
 			forum.CategoryHandler(db)(w, r)
 			return
+		} else {
+			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
 
@@ -126,10 +127,11 @@ func main() {
 			forum.PostLikedPosts(db)(w, r)
 			fmt.Println("calling PostLikedPosts")
 			return
-		}
-		if r.Method == "POST" {
+		}else if r.Method == "POST" {
 			forum.GetLikedPosts(db)(w, r)
 			return
+		} else {
+			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
 
@@ -137,12 +139,12 @@ func main() {
 	http.HandleFunc("/CtreatedBy", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			forum.PostPostsCreatedBy(db)(w, r)
-			fmt.Println("==================\n calling PostPostsCreatedBy")
 			return
-		}
-		if r.Method == "POST" {
+		}else if r.Method == "POST" {
 			forum.GetPostsCreatedBy(db)(w, r)
 			return
+		} else{
+			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
 

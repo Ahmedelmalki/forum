@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -19,9 +18,6 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 			ErrorHandler(w, "No categories provided", http.StatusBadRequest)
 			return
 		}
-
-		fmt.Printf("Filtering posts by categories: %v\n", categories)
-
 		// SQL query for filtering posts by categories
 		query := `
 		SELECT 
@@ -125,7 +121,7 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			    p.content, 
 			    p.created_at,
 			    COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-			    COUNT(l.id) AS like_count
+			    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like') AS like_count 
 			FROM 
 			    posts AS p
 			INNER JOIN 
@@ -168,7 +164,6 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Print("\n=============================\n", json.NewEncoder(os.Stdout).Encode([]any{posts, user_id}))
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
 			ErrorHandler(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
 		}
@@ -199,7 +194,7 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 					    p.content, 
 					    p.created_at,
 					    COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-					    COUNT(l.id) AS likecount
+					    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like') AS like_count
 					FROM 
 					    posts AS p
 					LEFT JOIN 
@@ -228,7 +223,7 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 			var likeCount int
 
 			err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category, &likeCount)
-			fmt.Println("*****************\n", likeCount)
+			fmt.Println("*****************\n likecount :", likeCount)
 			if err != nil {
 				ErrorHandler(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
 				return
