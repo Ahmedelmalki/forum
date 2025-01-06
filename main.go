@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./db/TestingEverything.db")
+	db, err := sql.Open("sqlite3", "./testingFilter.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
