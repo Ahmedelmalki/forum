@@ -8,17 +8,8 @@ import (
 	"net/http"
 )
 
-type likes struct {
-	User_Id      int    `json:"UserId"`
-	Post_Id      int    `json:"PostId"`
-	LikeCOunt    int    `json:"LikeCOunt"`
-	DislikeCOunt int    `json:"DislikeCOunt"`
-	CommentId    int    `json:"CommentId"`
-	Type         string `json:"Type"`
-}
-
 func HandleLikes(db *sql.DB) http.HandlerFunc {
-	var like likes
+	var like Likes
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
@@ -128,7 +119,7 @@ func countLikesForPost(db *sql.DB, postID int, CommentId int, liketype string, t
 	query := `SELECT COUNT(*) FROM likes WHERE post_id = ? AND comment_id = ? AND TypeOfLike = ? `
 	var likeCount int
 	err := db.QueryRow(query, postID, CommentId, liketype).Scan(&likeCount)
-	fmt.Println("########\n",likeCount,"\n#######")
+	fmt.Println("########\n", likeCount, "\n#######")
 	if err != nil {
 		return 0, errors.New("error counting likes")
 	}
