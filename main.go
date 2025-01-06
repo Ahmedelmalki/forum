@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "./db/cat3.db")
+	db, err := sql.Open("sqlite3", "./db/cat5.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
@@ -41,7 +41,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/"{
-			http.Error(w, "page not found", 404)
+			forum.ErrorHandler(w, "page not found", 404)
 			return
 		}
 		http.ServeFile(w, r, "static/templates/posts.html")
@@ -66,7 +66,7 @@ func main() {
 		if r.Method == http.MethodPost {
 			forum.LoginHandler(db)(w, r)
 		} else {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			forum.ErrorHandler(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
 
@@ -85,7 +85,7 @@ func main() {
 			forum.PostNewPostHandler(db)(w, r)
 		} else {
 			// Return a 405 Method Not Allowed error for unsupported methods
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})))
 
@@ -97,7 +97,7 @@ func main() {
 		case http.MethodGet:
 			forum.GetComments(db)(w, r)
 		default:
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
 
@@ -106,7 +106,7 @@ func main() {
 		if r.Method == http.MethodPost {
 			forum.LogOutHandler(db)(w, r)
 		} else {
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
 	http.HandleFunc("/category", func(w http.ResponseWriter, r *http.Request) {

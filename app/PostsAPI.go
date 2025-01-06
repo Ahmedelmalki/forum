@@ -95,7 +95,7 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		user_id := isLoged(db, r)
 		posts, err := FetchPosts(db, category)
 		if err != nil {
-			http.Error(w, "Error fetching posts", http.StatusInternalServerError)
+			ErrorHandler(w, "Error fetching posts", http.StatusInternalServerError)
 			return
 		}
 
@@ -104,7 +104,7 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		is cached by clients (browsers) and intermediate caches (proxies).*/
 		w.Header().Set("Cache-Control", "no-cache")
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
-			http.Error(w, "error encoding response", http.StatusInternalServerError)
+			ErrorHandler(w, "error encoding response", http.StatusInternalServerError)
 		}
 	}
 }

@@ -8,10 +8,17 @@ import (
 	"net/http"
 )
 
-
+type likes struct {
+	User_Id      int    `json:"UserId"`
+	Post_Id      int    `json:"PostId"`
+	LikeCOunt    int    `json:"LikeCOunt"`
+	DislikeCOunt int    `json:"DislikeCOunt"`
+	CommentId    int    `json:"CommentId"`
+	Type         string `json:"Type"`
+}
 
 func HandleLikes(db *sql.DB) http.HandlerFunc {
-	var like Likes
+	var like likes
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
@@ -28,7 +35,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 			{
 				err := json.NewDecoder(r.Body).Decode(&like)
 				if err != nil {
-					http.Error(w, "Invalid JSON", http.StatusBadRequest)
+					ErrorHandler(w, "Invalid JSON", http.StatusBadRequest)
 					return
 				}
 				like.User_Id, err = ValidateCookie(db, w, r)
@@ -39,7 +46,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 
 				like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, like.CommentId, like.Type, target)
 				if err != nil {
-					http.Error(w, "Error counting likes", http.StatusInternalServerError)
+					ErrorHandler(w, "Error counting likes", http.StatusInternalServerError)
 					return
 				}
 				checkQuery := `SELECT EXISTS(SELECT 1 FROM likes WHERE post_id = ? AND comment_id = ? AND user_id = ?)`
@@ -47,7 +54,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 				var exists bool
 				err = db.QueryRow(checkQuery, like.Post_Id, like.CommentId, like.User_Id).Scan(&exists)
 				if err != nil {
-					http.Error(w, "Error checking like existence", http.StatusInternalServerError)
+					ErrorHandler(w, "Error checking like existence", http.StatusInternalServerError)
 					return
 				}
 
@@ -61,14 +68,14 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 						// query := "DELETE FROM likes WHERE post_id = ? AND user_id = ?"
 						_, err = db.Exec(query, like.Post_Id, like.CommentId, like.User_Id)
 						if err != nil {
-							http.Error(w, "Error deleting like", http.StatusInternalServerError)
+							ErrorHandler(w, "Error deleting like", http.StatusInternalServerError)
 							return
 						}
 					} else {
 						Updatequery := `UPDATE likes SET TypeOfLike = ? WHERE post_id = ? AND comment_id = ? AND user_id = ?`
 						_, err = db.Exec(Updatequery, like.Type, like.Post_Id, like.CommentId, like.User_Id)
 						if err != nil {
-							http.Error(w, "Error UPDATNG likeS", http.StatusInternalServerError)
+							ErrorHandler(w, "Error UPDATNG likeS", http.StatusInternalServerError)
 							return
 						}
 					}
@@ -79,7 +86,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 					_, err = db.Exec(query, like.User_Id, like.Post_Id, like.CommentId, like.Type)
 					if err != nil {
 						fmt.Println(err)
-						http.Error(w, "Error adding like", http.StatusInternalServerError)
+						ErrorHandler(w, "Error adding like", http.StatusInternalServerError)
 						return
 					}
 				}
@@ -90,17 +97,17 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 				if targetId != 0 {
 					like.User_Id, err = ValidateCookie(db, w, r)
 					if err != nil {
-						http.Error(w, "No Active Session", http.StatusInternalServerError)
+						ErrorHandler(w, "No Active Session", http.StatusUnauthorized)
 						return
 					}
 					like.LikeCOunt, err = countLikesForPost(db, like.Post_Id, like.CommentId, "like", target)
 					if err != nil {
-						http.Error(w, "Error Counting like", http.StatusInternalServerError)
+						ErrorHandler(w, "Error Counting like", http.StatusInternalServerError)
 						return
 					}
 					like.DislikeCOunt, err = countLikesForPost(db, like.Post_Id, like.CommentId, "dislike", target)
 					if err != nil {
-						http.Error(w, "Error Counting dislike", http.StatusInternalServerError)
+						ErrorHandler(w, "Error Counting dislike", http.StatusInternalServerError)
 						return
 					}
 					w.Header().Set("Content-Type", "application/json")
@@ -110,7 +117,7 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 
 		default:
 			{
-				http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+				ErrorHandler(w, "Invalid request method", http.StatusMethodNotAllowed)
 				return
 			}
 		}

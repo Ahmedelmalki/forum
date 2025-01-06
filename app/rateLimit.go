@@ -53,7 +53,7 @@ func RateLimitMiddleware(next http.Handler) http.Handler {
 		mu.Unlock()
 
 		if v.count > 5 {
-			http.Error(w, "Too Many Requests", http.StatusTooManyRequests)
+			ErrorHandler(w, "Too Many Requests", http.StatusTooManyRequests)
 			return
 		}
 

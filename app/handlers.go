@@ -14,13 +14,13 @@ import (
 func RegisterHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			ErrorHandler(w, "Invalid request method", http.StatusMethodNotAllowed)
 			return
 		}
 		var credentials RegisterCredenials
 		err := json.NewDecoder(r.Body).Decode(&credentials)
 		if err != nil {
-			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+			ErrorHandler(w, "Invalid JSON", http.StatusBadRequest)
 			return
 		}
 
@@ -30,18 +30,18 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 
 		hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 		if err != nil {
-			http.Error(w, "error hashing the password", http.StatusInternalServerError)
+			ErrorHandler(w, "error hashing the password", http.StatusInternalServerError)
 		}
 
 		if username == "" || email == "" || password == "" {
-			http.Error(w, "All fields are required", http.StatusBadRequest)
+			ErrorHandler(w, "All fields are required", http.StatusBadRequest)
 			return
 		}
 
 		query := "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
 		res, err := db.Exec(query, username, email, hashed)
 		if err != nil {
-			http.Error(w, "Error adding user to database", http.StatusInternalServerError)
+			ErrorHandler(w, "Error adding user to database", http.StatusInternalServerError)
 			fmt.Println(err)
 			return
 		}
@@ -63,7 +63,7 @@ func RegisterHandler(db *sql.DB) http.HandlerFunc {
 func LoginHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			ErrorHandler(w, "Invalid request method", http.StatusMethodNotAllowed)
 			return
 		}
 
@@ -72,7 +72,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		// Decode JSON body
 		err := json.NewDecoder(r.Body).Decode(&credentials)
 		if err != nil {
-			http.Error(w, "Invalid JSON", http.StatusBadRequest)
+			ErrorHandler(w, "Invalid JSON", http.StatusBadRequest)
 			return
 		}
 
@@ -80,7 +80,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		password := credentials.Password
 
 		if email == "" || password == "" {
-			http.Error(w, "Email and password are required", http.StatusBadRequest)
+			ErrorHandler(w, "Email and password are required", http.StatusBadRequest)
 			return
 		}
 		var storedPassword string
@@ -89,16 +89,16 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		err = db.QueryRow(query, email).Scan(&storedPassword, &user_id)
 		if err != nil {
 			if err == sql.ErrNoRows {
-				http.Error(w, "User not found", http.StatusUnauthorized)
+				ErrorHandler(w, "User not found", http.StatusUnauthorized)
 			} else {
-				http.Error(w, "Database error", http.StatusInternalServerError)
+				ErrorHandler(w, "Database error", http.StatusInternalServerError)
 			}
 			return
 		}
 
 		err2 := bcrypt.CompareHashAndPassword([]byte(storedPassword), []byte(password))
 		if err2 != nil {
-			http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+			ErrorHandler(w, "Invalid credentials", http.StatusUnauthorized)
 			return
 		}
 
@@ -106,7 +106,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
 		_, err = db.Exec(deleteQuery, user_id)
 		if err != nil {
-			http.Error(w, "Error cleaning old sessions", http.StatusInternalServerError)
+			ErrorHandler(w, "Error cleaning old sessions", http.StatusInternalServerError)
 			return
 		}
 
@@ -129,25 +129,24 @@ func GetNewPostHandler(db *sql.DB) http.HandlerFunc {
 func LogOutHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+			ErrorHandler(w, "Invalid request method", http.StatusMethodNotAllowed)
 			return
 		}
 
 		cookie, err := r.Cookie("forum_session")
 		if err != nil {
-			http.Error(w, "No active session found", http.StatusUnauthorized)
+			ErrorHandler(w, "No active session found", http.StatusUnauthorized)
 			return
 		}
 
 		sessionID := cookie.Value
-		fmt.Printf("Method: %s Cookie: %+v\n", r.Method, cookie)
 		query := `DELETE FROM sessions WHERE session = ?`
 		res, err := db.Exec(query, sessionID)
 		if err != nil {
 			fmt.Println("error executing the query")
 		}
 		rows, _ := res.RowsAffected()
-		fmt.Println(rows)
+		fmt.Println("rows :",rows)
 
 		http.SetCookie(w, &http.Cookie{
 			Name:   "forum_session",
@@ -164,12 +163,12 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
-			http.Error(w, "Unable to parse form data", http.StatusBadRequest)
+			ErrorHandler(w, "Unable to parse form data", http.StatusBadRequest)
 			return
 		}
 		cookie, err := r.Cookie("forum_session")
 		if err != nil {
-			http.Error(w, "Unauthorized to create a post", http.StatusUnauthorized)
+			ErrorHandler(w, "Unauthorized to create a post", http.StatusUnauthorized)
 			return
 		}
 		var idForUsername int
@@ -189,11 +188,11 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 		content := r.FormValue("content")
 		categories := r.Form["categories[]"]
 		if title == "" || len(categories) == 0 || content == "" {
-			http.Error(w, "All fields are required", http.StatusBadRequest)
+			ErrorHandler(w, "All fields are required", http.StatusBadRequest)
 			return
 		}
 		if len(title) > 50 || len(content) > 1000 {
-			http.Error(w, "don't miss with the html plz", http.StatusBadRequest)
+			ErrorHandler(w, "title leght or content lenght exceeded", http.StatusBadRequest)
 			return
 		}
 

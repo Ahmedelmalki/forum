@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -16,7 +15,7 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 		fmt.Println(categories)
 
 		if len(categories) == 0 {
-			http.Error(w, "No categories provided", http.StatusBadRequest)
+			ErrorHandler(w, "No categories provided", http.StatusBadRequest)
 			return
 		}
 		query := `SELECT 
@@ -39,7 +38,7 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 		for _, c := range categories {
 			rows, err := db.Query(query, c)
 			if err != nil {
-				http.Error(w, "Failed to query posts: "+err.Error(), http.StatusInternalServerError)
+				ErrorHandler(w, "Failed to query posts: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 			defer rows.Close()
@@ -49,7 +48,7 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 
 				err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category)
 				if err != nil {
-					http.Error(w, "Failed to parse posts: "+err.Error(), http.StatusInternalServerError)
+					ErrorHandler(w, "Failed to parse posts: "+err.Error(), http.StatusInternalServerError)
 					return
 				}
 
@@ -57,14 +56,14 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 				posts = append(posts, post)
 			}
 			if err := rows.Err(); err != nil {
-				http.Error(w, "Error reading posts: "+err.Error(), http.StatusInternalServerError)
+				ErrorHandler(w, "Error reading posts: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 		}
 		user_id := isLoged(db, r)
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
-			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
 		}
 	}
 }
@@ -73,7 +72,7 @@ func Postcategory(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		template, err := template.ParseFiles("static/templates/category.html")
 		if err != nil {
-			http.Error(w, "internal server error", 500)
+			ErrorHandler(w, "internal server error", 500)
 		}
 		template.Execute(w, nil)
 	}
@@ -83,7 +82,7 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		user_id := isLoged(db, r)
 		if user_id == 0 {
-			http.Error(w, "user Unauthorized to make this request", http.StatusUnauthorized)
+			ErrorHandler(w, "user Unauthorized to make this request", http.StatusUnauthorized)
 			return
 		}
 		query := `	SELECT 
@@ -105,11 +104,15 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			ON 
 			    c.post_id = p.id
 			GROUP BY 
-			    p.id, p.username, p.title, p.content, p.created_at
+			    p.id,
+				p.username,
+				p.title,
+				p.content,
+				p.created_at;
 						`
 		rows, err := db.Query(query, user_id)
 		if err != nil {
-			http.Error(w, "Failed to query liked posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Failed to query liked posts: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
@@ -122,7 +125,7 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category, &likeCount)
 			fmt.Println("*****************\n", likeCount)
 			if err != nil {
-				http.Error(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
+				ErrorHandler(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 
@@ -131,14 +134,13 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			posts = append(posts, post)
 		}
 		if err := rows.Err(); err != nil {
-			http.Error(w, "Error reading liked posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Error reading liked posts: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Print("\n=============================\n",json.NewEncoder(os.Stdout).Encode([]any{posts, user_id}))
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
-			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
 		}
 	}
 }
@@ -147,7 +149,7 @@ func PostLikedPosts(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		template, err := template.ParseFiles("static/templates/likedPosts.html")
 		if err != nil {
-			http.Error(w, "internal server error", 500)
+			ErrorHandler(w, "internal server error", 500)
 		}
 		template.Execute(w, nil)
 	}
@@ -157,7 +159,7 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		user_id := isLoged(db, r)
 		if user_id == 0 {
-			http.Error(w, "user Unauthorized to make this request", http.StatusUnauthorized)
+			ErrorHandler(w, "user Unauthorized to make this request", http.StatusUnauthorized)
 			return
 		}
 		query := `SELECT 
@@ -185,7 +187,7 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 						`
 		rows, err := db.Query(query, user_id)
 		if err != nil {
-			http.Error(w, "Failed to query liked posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Failed to query liked posts: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		defer rows.Close()
@@ -198,7 +200,7 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 			err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category, &likeCount)
 			fmt.Println("*****************\n", likeCount)
 			if err != nil {
-				http.Error(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
+				ErrorHandler(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 
@@ -207,13 +209,13 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 			posts = append(posts, post)
 		}
 		if err := rows.Err(); err != nil {
-			http.Error(w, "Error reading liked posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Error reading liked posts: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode([]any{posts, user_id}); err != nil {
-			http.Error(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
+			ErrorHandler(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
 		}
 	}
 }
@@ -222,7 +224,7 @@ func PostPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		template, err := template.ParseFiles("static/templates/createdBy.html")
 		if err != nil {
-			http.Error(w, "internal server error", 500)
+			ErrorHandler(w, "internal server error", 500)
 		}
 		template.Execute(w, nil)
 	}

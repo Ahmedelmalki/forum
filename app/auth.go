@@ -48,7 +48,7 @@ func ValidateCookie(db *sql.DB, w http.ResponseWriter, r *http.Request) (int, er
 	err = db.QueryRow(query1, sessionID).Scan(&user_id)
 	if err != nil {
 		log.Printf("Failed to validate session for GET: %v", err)
-		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		ErrorHandler(w, "Invalid session", http.StatusUnauthorized)
 		return 0, errors.New("error")
 	}
 	return user_id, nil
