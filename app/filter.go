@@ -27,8 +27,8 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 			p.content, 
 			p.created_at, 
 			COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-			COUNT(CASE WHEN l.TypeOfLike = 'like' THEN 1 ELSE NULL END) AS likes,
-			COUNT(CASE WHEN l.TypeOfLike = 'dislike' THEN 1 ELSE NULL END) AS dislikes
+			COUNT(CASE WHEN l.TypeOfLike = 'like' AND l.comment_id = -1 THEN 1 ELSE NULL END) AS likes,
+			COUNT(CASE WHEN l.TypeOfLike = 'dislike' AND l.comment_id = -1 THEN 1 ELSE NULL END) AS dislikes
 		FROM 
 			posts AS p
 		LEFT JOIN 
