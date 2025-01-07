@@ -32,7 +32,6 @@ function likeEvent(post, commentId, postId) {
     likeButton.forEach((element) => {
       element.addEventListener("click", async () => {
         try {
-          // console.log( likeButton.classList.contains("like"))
           const response = await fetch("/like", {
             method: "POST",
             headers: {

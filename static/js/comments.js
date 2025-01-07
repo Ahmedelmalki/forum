@@ -1,5 +1,3 @@
-/*************Start Comment sections functions*****************/
-// Function to post a comment
 async function postComment(postId, userId) {
   const commentInput = document.getElementById(`comment-input-${postId}`);
   const commentContent = commentInput.value;
@@ -26,7 +24,6 @@ async function postComment(postId, userId) {
   }
 }
 
-// Function to load comments
 async function loadComments(postId) {
   try {
     const response = await fetch(`/comments?post_id=${postId}`);
@@ -65,7 +62,7 @@ async function loadComments(postId) {
       
           <p>${escapeHTML(comment.content)}</p>
          <div class="comment-actions">
-          <button class="comment-btn like">❤️</button>
+          <button class="comment-btn like">👍</button>
           <div class="comment-likes like">${(comment.Likes)} </div>
           <button class="comment-btn dislike">👎</button>
           <div class="comment-dislikes">${(comment.Dislikes)}  </div>
@@ -79,4 +76,3 @@ async function loadComments(postId) {
     console.error("RError of loading comments:", error);
   }
 }
-/*************End Comment sections functions*****************/

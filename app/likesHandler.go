@@ -21,7 +21,6 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 			targetId = like.CommentId
 
 		}
-		fmt.Println("targret :", target)
 		switch r.Method {
 		case http.MethodPost:
 			{
@@ -51,13 +50,11 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 				}
 
 				if exists {
-					//  "SELECT TypeOfLike FROM likes WHERE post_id = ? AND user_id = ?"
 					LiketypeQuery := `SELECT TypeOfLike FROM likes WHERE post_id = ? AND comment_id = ? AND user_id = ?`
 					var typea string
 					db.QueryRow(LiketypeQuery, like.Post_Id, like.CommentId, like.User_Id).Scan(&typea)
 					if typea == like.Type {
 						query := `DELETE FROM likes WHERE post_id = ? AND comment_id = ? AND user_id = ?`
-						// query := "DELETE FROM likes WHERE post_id = ? AND user_id = ?"
 						_, err = db.Exec(query, like.Post_Id, like.CommentId, like.User_Id)
 						if err != nil {
 							ErrorHandler(w, "Error deleting like", http.StatusInternalServerError)

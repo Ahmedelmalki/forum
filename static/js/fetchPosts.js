@@ -1,4 +1,3 @@
-// Fetch posts from the API and render them
 export async function fetchPosts(type) {
   try {
     let posts = null;
@@ -15,7 +14,7 @@ export async function fetchPosts(type) {
       } else {
         const response = await fetch(`/${type}`);
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`There are no posts yet`);
         }
 
         posts = await response.json();
@@ -48,13 +47,11 @@ export async function fetchPosts(type) {
     }
 
     const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = ""; // Clear any existing content
-
+    postsContainer.innerHTML = ""; 
     if (posts.length === 0) {
       postsContainer.innerHTML = "<p>No posts found.</p>";
       return;
     }
-    // handling logout/login button visibility
     if (posts[1] != 0) {
       document.querySelectorAll(".loged").forEach((elem) => {
         elem.style.display = "none";
@@ -101,7 +98,7 @@ export async function fetchPosts(type) {
         ${post.Categories.join(", ")}, ${timeAgo(post.CreatedAt).toLocaleString()}
         </div>
          <div class="post-actions">
-          <button class="post-btn like" style="background:none;" id="${post.Id}">❤️</button>
+          <button class="post-btn like" style="background:none;" id="${post.Id}">👍</button>
           <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
           <button class="post-btn dislike", style="background:none;"  id = ${post.Id}>👎</button>
           <div class="post-dislikes" >${escapeHTML(post.Dislikes.toString())} </div>
@@ -128,7 +125,7 @@ export async function fetchPosts(type) {
   } catch (error) {
     console.error("Error fetching posts:", error);
     const postsContainer = document.getElementById("posts");
-    postsContainer.innerHTML = `<p>Error loading posts: ${error.message}</p>`;
+    postsContainer.innerHTML = `<p>There are no posts yet</p>`;
   }
 }
 
@@ -161,7 +158,6 @@ export function toggleDetails(toggleElement) {
     : "Hide Details";
 }
 
-// Utility function to escape HTML to prevent XSS
 export function escapeHTML(str) {
   if (typeof str !== "string") return "";
   return str.replace(

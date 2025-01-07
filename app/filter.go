@@ -9,39 +9,35 @@ import (
 	"strings"
 )
 
-// CategoryHandler handles the filtering of posts by category
 func CategoryHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Extract categories from query parameters
 		categories := r.URL.Query()["categories"]
 		if len(categories) == 0 {
 			ErrorHandler(w, "No categories provided", http.StatusBadRequest)
 			return
 		}
-		// SQL query for filtering posts by categories
 		query := `
-		SELECT 
-			p.id, 
-			p.username, 
-			p.title, 
-			p.content, 
-			p.created_at, 
-			COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-			COUNT(CASE WHEN l.TypeOfLike = 'like' AND comment_id == -1 THEN 1 ELSE NULL END) AS likes,
-			COUNT(CASE WHEN l.TypeOfLike = 'dislike' AND comment_id == -1 THEN 1 ELSE NULL END) AS dislikes
-		FROM 
-			posts AS p
-		LEFT JOIN 
-			categories AS c ON c.post_id = p.id
-		LEFT JOIN 
-			likes AS l ON l.post_id = p.id
-		WHERE 
-			c.categories IN (?` + strings.Repeat(", ?", len(categories)-1) + `)
-		GROUP BY 
-			p.id;
+					SELECT 
+						p.id, 
+						p.username, 
+						p.title, 
+						p.content, 
+						p.created_at, 
+						COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
+						COUNT(CASE WHEN l.TypeOfLike = 'like' AND comment_id == -1 THEN 1 ELSE NULL END) AS likes,
+						COUNT(CASE WHEN l.TypeOfLike = 'dislike' AND comment_id == -1 THEN 1 ELSE NULL END) AS dislikes
+					FROM 
+						posts AS p
+					LEFT JOIN 
+						categories AS c ON c.post_id = p.id
+					LEFT JOIN 
+						likes AS l ON l.post_id = p.id
+					WHERE 
+						c.categories IN (?` + strings.Repeat(", ?", len(categories)-1) + `)
+					GROUP BY 
+						p.id;
 		`
 
-		// Prepare the query with dynamic number of placeholders
 		args := make([]interface{}, len(categories))
 		for i, category := range categories {
 			args[i] = category
@@ -75,17 +71,14 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 			posts = append(posts, post)
 		}
 
-		// Check for row iteration errors
 		if err := rows.Err(); err != nil {
 			ErrorHandler(w, "Error iterating rows: "+err.Error(), http.StatusInternalServerError)
 			fmt.Printf("Error iterating rows: %v\n", err)
 			return
 		}
 
-		// Get the user ID for the current session
 		userID := isLoged(db, r)
 
-		// Send response
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode([]any{posts, userID}); err != nil {
 			ErrorHandler(w, "Failed to encode posts: "+err.Error(), http.StatusInternalServerError)
@@ -94,7 +87,6 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-// Postcategory renders the category selection page
 func Postcategory(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		template, err := template.ParseFiles("static/templates/category.html")
@@ -115,25 +107,25 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		query := `	SELECT 
-			    p.id AS post_id, 
-			    p.username, 
-			    p.title, 
-			    p.content, 
-			    p.created_at,
-			    COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-			    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like' AND comment_id == -1 ) AS like_count 
-			FROM 
-			    posts AS p
-			INNER JOIN 
-			    likes AS l
-			ON 
-			    l.post_id = p.id AND l.TypeOfLike = 'like' AND l.user_id = ?
-			LEFT JOIN 
-			    categories AS c
-			ON 
-			    c.post_id = p.id
-			GROUP BY 
-			    p.id, p.username, p.title, p.content, p.created_at
+					    p.id AS post_id, 
+					    p.username, 
+					    p.title, 
+					    p.content, 
+					    p.created_at,
+					    COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
+					    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like' AND comment_id == -1 ) AS like_count 
+					FROM 
+					    posts AS p
+					INNER JOIN 
+					    likes AS l
+					ON 
+					    l.post_id = p.id AND l.TypeOfLike = 'like' AND l.user_id = ?
+					LEFT JOIN 
+					    categories AS c
+					ON 
+					    c.post_id = p.id
+					GROUP BY 
+					    p.id, p.username, p.title, p.content, p.created_at
 						`
 		rows, err := db.Query(query, user_id)
 		if err != nil {
@@ -148,7 +140,6 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			var likeCount int
 
 			err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category, &likeCount)
-			fmt.Println("*****************\n", likeCount)
 			if err != nil {
 				ErrorHandler(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
 				return
@@ -223,7 +214,6 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 			var likeCount int
 
 			err := rows.Scan(&post.ID, &post.UserName, &post.Title, &post.Content, &post.CreatedAt, &category, &likeCount)
-			fmt.Println("*****************\n likecount :", likeCount)
 			if err != nil {
 				ErrorHandler(w, "Failed to parse liked posts: "+err.Error(), http.StatusInternalServerError)
 				return

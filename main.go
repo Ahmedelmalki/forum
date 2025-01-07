@@ -13,12 +13,11 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func main() {
-	db, err := sql.Open("sqlite3", "./db/TestingEverything.db")
+func initDB() *sql.DB {
+	db, err := sql.Open("sqlite3", "./finalTest.db")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
-	defer db.Close()
 
 	if err := db.Ping(); err != nil {
 		log.Fatalf("Database connection error: %v", err)
@@ -38,9 +37,14 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to execute SQL script: %v", err)
 	}
+	return db
+}
 
+func main() {
+	db := initDB()
+	defer db.Close()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/"{
+		if r.URL.Path != "/" {
 			forum.ErrorHandler(w, "page not found", 404)
 			return
 		}
@@ -55,7 +59,6 @@ func main() {
 
 	http.HandleFunc("/register/submit", forum.RegisterHandler(db))
 
-	// likes
 	http.HandleFunc("/like", forum.HandleLikes(db))
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
@@ -72,24 +75,19 @@ func main() {
 
 	http.Handle("/newPost", forum.RateLimitMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			// Validate the user's cookie
 			_, err := forum.ValidateCookie(db, w, r)
 			if err != nil {
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}
-			// Serve the HTML template for new posts
 			http.ServeFile(w, r, "static/templates/newPost.html")
 		} else if r.Method == http.MethodPost {
-			// Handle new post creation
 			forum.PostNewPostHandler(db)(w, r)
 		} else {
-			// Return a 405 Method Not Allowed error for unsupported methods
 			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})))
 
-	// Comments handling
 	http.HandleFunc("/comments", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
@@ -101,7 +99,6 @@ func main() {
 		}
 	})
 
-	// Logout
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			forum.LogOutHandler(db)(w, r)
@@ -113,7 +110,7 @@ func main() {
 		if r.Method == "GET" {
 			forum.Postcategory(db)(w, r)
 			return
-		}else if r.Method == "POST" {
+		} else if r.Method == "POST" {
 			forum.CategoryHandler(db)(w, r)
 			return
 		} else {
@@ -121,13 +118,11 @@ func main() {
 		}
 	})
 
-	//filtering by liked posts
 	http.HandleFunc("/LikedPosts", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			forum.PostLikedPosts(db)(w, r)
-			fmt.Println("calling PostLikedPosts")
 			return
-		}else if r.Method == "POST" {
+		} else if r.Method == "POST" {
 			forum.GetLikedPosts(db)(w, r)
 			return
 		} else {
@@ -135,15 +130,14 @@ func main() {
 		}
 	})
 
-	//filtering by created posts
 	http.HandleFunc("/CtreatedBy", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "GET" {
 			forum.PostPostsCreatedBy(db)(w, r)
 			return
-		}else if r.Method == "POST" {
+		} else if r.Method == "POST" {
 			forum.GetPostsCreatedBy(db)(w, r)
 			return
-		} else{
+		} else {
 			forum.ErrorHandler(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})

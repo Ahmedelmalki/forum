@@ -47,7 +47,6 @@ func CreateComment(db *sql.DB) http.HandlerFunc {
 	}
 }
 
-// Function to get comments
 func GetComments(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		postID := r.URL.Query().Get("post_id")

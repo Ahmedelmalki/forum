@@ -17,4 +17,3 @@ CMD ["./main"]
 
 # to build : docker build -t test:3allal -f docker/dockerfile .
 # to run   : docker run -d test:3allal
-# why the js is not working
