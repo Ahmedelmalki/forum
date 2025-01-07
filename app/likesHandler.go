@@ -130,6 +130,5 @@ func countLikesForPost(db *sql.DB, postID int, CommentId int, liketype string, t
 	if err != nil {
 		return 0, errors.New("error counting likes")
 	}
-
 	return likeCount, nil
 }
