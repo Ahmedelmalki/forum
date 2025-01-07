@@ -15,5 +15,5 @@ EXPOSE 8090
 
 CMD ["./main"]
 
-# to build : docker build -t test:3allal -f docker/dockerfile .
+# to build : docker build -t test:3allal .
 # to run   : docker run -d test:3allal
