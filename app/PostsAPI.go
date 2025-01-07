@@ -108,5 +108,3 @@ func APIHandler(db *sql.DB) http.HandlerFunc {
 		}
 	}
 }
-
-

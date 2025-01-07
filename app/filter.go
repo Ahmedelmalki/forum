@@ -27,8 +27,8 @@ func CategoryHandler(db *sql.DB) http.HandlerFunc {
 			p.content, 
 			p.created_at, 
 			COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-			COUNT(CASE WHEN l.TypeOfLike = 'like' THEN 1 ELSE NULL END) AS likes,
-			COUNT(CASE WHEN l.TypeOfLike = 'dislike' THEN 1 ELSE NULL END) AS dislikes
+			COUNT(CASE WHEN l.TypeOfLike = 'like' AND comment_id == -1 THEN 1 ELSE NULL END) AS likes,
+			COUNT(CASE WHEN l.TypeOfLike = 'dislike' AND comment_id == -1 THEN 1 ELSE NULL END) AS dislikes
 		FROM 
 			posts AS p
 		LEFT JOIN 
@@ -121,7 +121,7 @@ func GetLikedPosts(db *sql.DB) http.HandlerFunc {
 			    p.content, 
 			    p.created_at,
 			    COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-			    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like') AS like_count 
+			    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like' AND comment_id == -1 ) AS like_count 
 			FROM 
 			    posts AS p
 			INNER JOIN 
@@ -194,7 +194,7 @@ func GetPostsCreatedBy(db *sql.DB) http.HandlerFunc {
 					    p.content, 
 					    p.created_at,
 					    COALESCE(GROUP_CONCAT(c.categories), '') AS categories,
-					    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like') AS like_count
+					    (SELECT COUNT(*) FROM likes WHERE post_id = p.id AND TypeOfLike = 'like' AND comment_id == -1) AS like_count
 					FROM 
 					    posts AS p
 					LEFT JOIN 

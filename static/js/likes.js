@@ -1,4 +1,4 @@
-async function UpdateLike(post , classNm) {
+async function UpdateLike(post, classNm) {
   try {
     console.log(post, classNm)
     const response = await fetch("/like");
@@ -18,10 +18,10 @@ async function UpdateLike(post , classNm) {
 }
 function likeEvent(post, commentId, postId) {
   let clss = "post"
-  if (commentId !== undefined){
+  if (commentId !== undefined) {
     clss = "comment"
   }
-  
+
   likeButton = post.querySelectorAll(`.${clss}-actions .${clss}-btn`);
 
   if (window.cookie == "") {
@@ -57,7 +57,7 @@ function likeEvent(post, commentId, postId) {
               document.appendChild(erroemssg);
             }
           }
-          await UpdateLike(post , clss);
+          await UpdateLike(post, clss);
         } catch (err) {
           console.log(err);
         }

@@ -117,10 +117,16 @@ func HandleLikes(db *sql.DB) http.HandlerFunc {
 }
 
 func countLikesForPost(db *sql.DB, postID int, CommentId int, liketype string, target string) (int, error) {
-	query := `SELECT COUNT(*) FROM likes WHERE post_id = ? AND comment_id = ? AND TypeOfLike = ? `
+	var query string
 	var likeCount int
-	err := db.QueryRow(query, postID, CommentId, liketype).Scan(&likeCount)
-	fmt.Println("########\n", likeCount, "\n#######")
+	var err error
+	if target == "comment" {
+		query = `SELECT COUNT(*) FROM likes WHERE comment_id = ? AND TypeOfLike = ? `
+		err = db.QueryRow(query, CommentId, liketype).Scan(&likeCount)
+	} else if target == "post" {
+		query = `SELECT COUNT(*) FROM likes WHERE post_id = ? AND TypeOfLike = ? AND comment_id == -1 `
+		err = db.QueryRow(query, postID, liketype).Scan(&likeCount)
+	}
 	if err != nil {
 		return 0, errors.New("error counting likes")
 	}
