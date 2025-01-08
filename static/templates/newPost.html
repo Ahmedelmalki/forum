@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/static/style/img/favcon.gif" type="image/x-icon">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
   <link rel="stylesheet" href="static/style/newPost.css" />
   <title>New Post</title>
@@ -13,14 +14,15 @@
   <div class="container">
     <h1>Create a New Post</h1>
     <form id="newPostForm" action="/newPost" method="post">
-      <label for="title">Title:</label>
+      <h for="title">Title:</h>
       <input type="text" maxlength="50" id="title" name="title" required />
 
-      <label for="content">Content:</label>
+      <h for="content">Content:</h>
       <textarea id="content" maxlength="1000" name="content" rows="5" required></textarea>
 
-        <label>Categories:</label>
-        <div>
+      <!-- we change it to check box so the user can chose one or more categories -->
+      <div1>  
+      <div>
           <input type="checkbox" name="categories[]" value="tech" id="category-tech" />
           <label for="category-tech">Tech</label>
         </div>
@@ -32,7 +34,7 @@
           <input type="checkbox" name="categories[]" value="sport" id="category-sport" />
           <label for="category-sport">Sport</label>
         </div>
-
+      </div1>
       <button type="submit" id="createPostButton" class="create-post">Create Post</button>
       <button type="button" class="btn back-btn" onclick="window.location.href='/'">Back to Home</button>
     </form>

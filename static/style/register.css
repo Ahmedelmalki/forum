@@ -1,87 +1,86 @@
 /* General Styling */
 body {
-    font-family: Arial, sans-serif;
-    background-image: url("img/blue.gif");
-    background-attachment: fixed;
-    background-color: #f4f4f4;
-    color: #333;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-  }
-  
-  /* Container Styling */
+  font-family: Arial, sans-serif;
+  background-image: url("img/blue.gif");
+  background-attachment: fixed;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Container Styling */
+.container {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
+  border: 20px outset #ffffff;
+  margin-bottom: 50px;
+  position: fixed;
+  display: grid;
+}
+
+/* Label Styling */
+label {
+  font-size: 1rem;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+/* Input Styling */
+input {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 15px outset #fff;
+  background: #fffbfb;
+  color: #000;
+  font-size: 1rem;
+}
+
+/* Button Styling */
+button {
+  background-color: #000000;
+  color: #eeeeee;
+  font-size: 1rem;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Back to Home Button Styling */
+.btn.back-btn {
+  background-color: #000000;
+  color: #eeeeee;
+  font-size: 1rem;
+  padding: 10px;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #000000;
+  box-shadow: inset;
+}
+
+.btn.back-btn {
+  margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
   .container {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    width: 90%;
-    max-width: 400px;
-    border: 20px outset #ffffff;
-    margin-bottom: 50px;
-    position: fixed;
-    display: grid;
+    padding: 20px;
   }
-  
-  /* Label Styling */
-  label {
-    font-size: 1rem;
-    margin: 10px 0 5px;
-    font-weight: bold;
-  }
-  
-  /* Input Styling */
-  input {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 15px outset #fff;
-    background: #fffbfb;
-    color: #000;
-    font-size: 1rem;
-  }
-  
-  /* Button Styling */
-  button {
-    background-color: #000000;
-    color: #eeeeee;
-    font-size: 1rem;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  
-  /* Back to Home Button Styling */
-  .btn.back-btn {
-    background-color: #000000;
-    color: #eeeeee;
-    font-size: 1rem;
-    padding: 10px;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  
-  button:hover {
-    background-color: #000000;
-    box-shadow: inset;
-  }
-  
-  .btn.back-btn {
-    margin-top: 10px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 480px) {
-    .container {
-      padding: 20px;
-    }
-  }
-  
+}

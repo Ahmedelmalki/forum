@@ -95,8 +95,8 @@ export async function fetchPosts(type) {
            <span class="details-text">Details</span>
         </div>
         <div class="meta hidden">
-        ${post.Categories.join(", ")}, ${timeAgo(post.CreatedAt).toLocaleString()}
-        </div>
+        ${escapeHTML(post.Categories.join(", "))}, ${timeAgo(post.Created_at).toLocaleString()}
+          </div>
          <div class="post-actions">
           <button class="post-btn like" style="background:none;" id="${post.Id}">👍</button>
           <div class="post-likes like">${escapeHTML(post.Likes.toString())} </div>
