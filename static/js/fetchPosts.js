@@ -158,6 +158,7 @@ export function toggleDetails(toggleElement) {
     : "Hide Details";
 }
 
+
 export function escapeHTML(str) {
   if (typeof str !== "string") return "";
   return str.replace(

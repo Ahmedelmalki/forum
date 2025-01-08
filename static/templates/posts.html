@@ -14,18 +14,19 @@
       <a href="/login"  class="login-btn loged">login</a>
       <a href="/register" class="register-btn loged">register</a>
       <a href="/newPost" class="newPost-btn unloged">create new a post</a>
-        <form action="/CtreatedBy" method="GET">
-          <button type="submit" id="created-by" class="created-by">Created By</button>
-        </form>
-        <form action="/LikedPosts" method="GET">
-          <button type="submit" id="Liked-posts" class="Liked-posts">Liked posts & Liked Comments</button>
-        </form>
       <form action="/logout" method="POST">
         <button type="submit" class="log-out-btn unloged">Log Out</button>
       </form>
     </header>
+    
+    <form1>
     <div class="container">
-      <h2>Posts</h2>
+      <form action="/CtreatedBy" method="GET">
+        <button type="submit" id="created-by" class="created-by">Created By</button>
+      </form>
+      <form action="/LikedPosts" method="GET">
+        <button type="submit" id="Liked-posts" class="Liked-posts">Liked Posts & comments</button>
+      </form>
       </div>
       <form id="filter-form" action="/category" method="GET">
         <div class="checkbox-wrapper-47">
@@ -42,6 +43,7 @@
         </div>
         <button type="submit" id="apply-filter">Apply</button>
       </form>
+    </form1>
       <div id="posts"></div>
     </div>
     <script src="/static/js/fetchPosts.js"></script>
