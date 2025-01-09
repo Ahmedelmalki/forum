@@ -48,6 +48,7 @@ func main() {
 			forum.ErrorHandler(w, "page not found", 404)
 			return
 		}
+		
 		http.ServeFile(w, r, "static/templates/posts.html")
 	})
 
