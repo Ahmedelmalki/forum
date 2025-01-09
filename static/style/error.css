@@ -1,82 +1,86 @@
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+@import url('https://fonts.cdnfonts.com/css/jetbrains-mono-2');
 
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f9f9f9;
-            color: #333;
-        }
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-        .error-container {
-            text-align: center;
-            padding: 20px;
-            max-width: 600px;
-            width: 100%;
-            background: #fff;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
+/* Body Styling */
+body {
+  background-image: url("img/blue.gif");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  font-family: 'JetBrains Mono NL', sans-serif;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #121212; /* Fallback for the background */
+}
 
-        .oops {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #ff4d4d;
-        }
+/* Error Container Styling */
+.error-container {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1), 
+              0px 0px 20px rgba(0, 153, 255, 0.2), 
+              inset 0px 0px 50px rgba(255, 255, 255, 0.2);
+}
 
-        .status {
-            font-size: 2rem;
-            margin: 15px 0;
-            color: #555;
-        }
+/* Oops! Heading Styling */
+.oops {
+  font-size: 60px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ff6b6b; /* Bright red for emphasis */
+  text-shadow: 0px 0px 10px #ff6b6b, 0px 0px 20px #ff0000;
+}
 
-        .mssg {
-            font-size: 1.2rem;
-            margin: 15px 0;
-            line-height: 1.6;
-            color: #666;
-        }
+/* Status Code Styling */
+.status {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #ffffff;
+  text-shadow: 0px 0px 10px #ffffff, 0px 0px 20px #cccccc;
+}
 
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            background-color: #007bff;
-            text-decoration: none;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
+/* Error Message Styling */
+.mssg {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #cccccc;
+  text-shadow: 0px 0px 10px #cccccc;
+}
 
-        .back-btn:hover {
-            background-color: #0056b3;
-            transform: translateY(-2px);
-        }
+/* Back Button Styling */
+.back-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  text-decoration: none;
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  border: 1px dashed #6a11cb;
+  
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-        @media (max-width: 480px) {
-            .oops {
-                font-size: 3rem;
-            }
+.back-btn:hover {
+    box-shadow: inset 0 0 30px #22284e;
 
-            .status {
-                font-size: 1.5rem;
-            }
+}
+.back-btn:active{
+    box-shadow: inset 0 0 30px #000000;
 
-            .mssg {
-                font-size: 1rem;
-            }
-
-            .back-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-        }
+}
