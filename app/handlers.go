@@ -102,12 +102,12 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		// handling one session at a time
-		// deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
-		// _, err = db.Exec(deleteQuery, user_id)
-		// if err != nil {
-		// 	ErrorHandler(w, "Error cleaning old sessions", http.StatusInternalServerError)
-		// 	return
-		// }
+		deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
+		_, err = db.Exec(deleteQuery, user_id)
+		if err != nil {
+			ErrorHandler(w, "Error cleaning old sessions", http.StatusInternalServerError)
+			return
+		}
 
 		cookie := CookieMaker(w)
 		err = InsretCookie(db, user_id, cookie, time.Now().Add(time.Hour*24))
@@ -243,8 +243,6 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 			}
 		}
 		tx.Commit()
-		fmt.Println("owaah may goto..")
-
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
