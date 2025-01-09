@@ -1,0 +1,82 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .oops {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff4d4d;
+        }
+
+        .status {
+            font-size: 2rem;
+            margin: 15px 0;
+            color: #555;
+        }
+
+        .mssg {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .oops {
+                font-size: 3rem;
+            }
+
+            .status {
+                font-size: 1.5rem;
+            }
+
+            .mssg {
+                font-size: 1rem;
+            }
+
+            .back-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }

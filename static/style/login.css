@@ -84,8 +84,31 @@ button:hover {
 }
 
 /* Responsive Design */
-@media (max-width: 480px) {
+@media screen and (max-width: 412px) {
+  body {
+    padding: 10px;
+  }
+
   .container {
     padding: 20px;
+    width: 100%;
+    max-width: 350px;
+    border: 10px outset #ffffff;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+
+  button, .btn.back-btn {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
+
+  label {
+    font-size: 0.9rem;
   }
 }

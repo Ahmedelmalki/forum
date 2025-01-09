@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"time"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -103,12 +102,12 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		}
 
 		// handling one session at a time
-		deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
-		_, err = db.Exec(deleteQuery, user_id)
-		if err != nil {
-			ErrorHandler(w, "Error cleaning old sessions", http.StatusInternalServerError)
-			return
-		}
+		// deleteQuery := "DELETE FROM sessions WHERE user_id = ?"
+		// _, err = db.Exec(deleteQuery, user_id)
+		// if err != nil {
+		// 	ErrorHandler(w, "Error cleaning old sessions", http.StatusInternalServerError)
+		// 	return
+		// }
 
 		cookie := CookieMaker(w)
 		err = InsretCookie(db, user_id, cookie, time.Now().Add(time.Hour*24))
@@ -118,6 +117,33 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 		}
 		fmt.Printf("%s logged in successfully!\n", email)
 	}
+}
+func AuthenticationMiddleware(next http.HandlerFunc, db *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        // Allow access to the homepage without authentication
+        if r.URL.Path == "/" {
+            next(w, r)
+            return
+        }
+
+        // Check if the user has a valid session
+        cookie, err := r.Cookie("forum_session")
+        if err != nil || cookie.Value == "" {
+            http.Redirect(w, r, "/", http.StatusSeeOther)
+            return
+        }
+
+        // Verify session in the database
+        var userID int
+        err = db.QueryRow("SELECT user_id FROM sessions WHERE session = ?", cookie.Value).Scan(&userID)
+        if err != nil {
+            http.Redirect(w, r, "/", http.StatusSeeOther)
+            return
+        }
+
+        // Proceed to the handler if authenticated
+        next(w, r)
+    }
 }
 
 func GetNewPostHandler(db *sql.DB) http.HandlerFunc {
@@ -217,6 +243,7 @@ func PostNewPostHandler(db *sql.DB) http.HandlerFunc {
 			}
 		}
 		tx.Commit()
+		fmt.Println("owaah may goto..")
 
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}

@@ -39,17 +39,7 @@
       <button type="button" class="btn back-btn" onclick="window.location.href='/'">Back to Home</button>
     </form>
   </div>
-  <script>
-    const createPostButton = document.getElementById('createPostButton');
-    document.getElementById('newPostForm').addEventListener('submit', (event) => {
-      createPostButton.disabled = true;
-      createPostButton.textContent = 'Submitting...';
-      setTimeout(() => {
-        createPostButton.disabled = false;
-        createPostButton.textContent = 'Create Post';
-      }, 5000);
-    });
-  </script>
+  <script src="/static/js/makeNewPost.js"></script>
 </body>
 
 </html>
