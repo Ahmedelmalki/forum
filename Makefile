@@ -14,6 +14,7 @@ clean:
 	@rm -rf forum || true
 	@docker rm -f forum-container || true
 	@docker rmi -f forum-image || true
+	@clear
 
 all: stop clean build run
 
