@@ -5,6 +5,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: 0.5s;
 }
 /* Body and page layout */
 body {
@@ -22,6 +23,19 @@ body {
   flex-direction: column;
   align-items: center;
 }
+#mute-button {
+  cursor: pointer;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: none;
+}
+#mute-icon{
+  height: 30px;
+  width: 30px;
+}
+
+
 b {
   font-weight: bolder;
   color: black;
@@ -315,14 +329,14 @@ h2 {
   background-color: #fafafa;
   display: block;
 }
-/* .comment-section {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fafafa;
-  min-height: 150px;
-} */
+.title {
+  font-weight: bolder;
+  background-color: white;
+  opacity: 0.9;
+  border: 1px solid;
+  padding: 5px;
+  text-align: center;
+}
  /* Style the comment section */
  .comment {
   border: 2px inset #fff;
